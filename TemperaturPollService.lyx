@@ -128,7 +128,7 @@ TemperaturePollService
 \end_layout
 
 \begin_layout Subsection*
-SW-Beschreibung
+SW-Beschreibung (C Implementierung)
 \end_layout
 
 \begin_layout Standard
@@ -160,12 +160,17 @@ pressions geparst.
  Die Sensor-Messwerte werden zusammen mit der Zeitmarke der Abfrage in einer
  Datei gesammelt.
  Für jeden Kalendertag wird eine neue Datei erzeugt.
+ Ebenfalls im Eventhandler wird die um die neuen Messwerte erweiterte Datei
+ per FTP zur Diskstation kopiert.
+ 
+\end_layout
+
+\begin_layout Subsection*
+SW-Beschreibung (C++ Implementierung)
 \end_layout
 
 \begin_layout Standard
-Ebenfalls im Eventhandler wird die um die neuen Messwerte erweiterte Datei
- per FTP zur Diskstation kopiert.
- 
+noch zu tun
 \end_layout
 
 \begin_layout Subsection*
