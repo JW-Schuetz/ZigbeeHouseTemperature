@@ -9,10 +9,11 @@ Regexp::Regexp()
 
   for( int n = 0; n < N; ++n )
   {
-    int ret = regcomp( &regex_compiled[n], regexp[n].c_str(), REG_EXTENDED );
-
 #ifdef DEBUG
+    int ret = regcomp( &regex_compiled[n], regexp[n].c_str(), REG_EXTENDED );
     printResults( regexp[n], ret, regex_compiled[n] );
+#else
+    regcomp( &regex_compiled[n], regexp[n].c_str(), REG_EXTENDED );
 #endif
   }
 }
