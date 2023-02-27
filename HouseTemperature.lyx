@@ -1,0 +1,414 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{a4}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language ngerman
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 0
+\use_package mathdots 0
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Stichwortverzeichnis
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 1cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip smallskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style german
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Subsection*
+phoscon zigbee
+\end_layout
+
+\begin_layout Itemize
+wiringpi fehlt: 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+wget https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-
+armhf.deb
+\end_layout
+
+\begin_layout Itemize
+sudo dpkg -i wiringpi-2.61-1-armhf.deb
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+sudo gpasswd -a juergen dialout
+\end_layout
+
+\begin_layout Itemize
+wget -O - http://phoscon.de/apt/deconz.pub.key | sudo apt-key add -
+\end_layout
+
+\begin_layout Itemize
+sudo sh -c "echo 'deb http://phoscon.de/apt/deconz $(lsb_release -cs) main'
+ > /etc/apt/sources.list.d/deconz.list"
+\end_layout
+
+\begin_layout Itemize
+sudo apt update
+\end_layout
+
+\begin_layout Itemize
+sudo apt install deconz
+\end_layout
+
+\begin_layout Itemize
+Beim Reboot automatisch starten:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Datei deconz.service erzeugen:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+[Unit]
+\end_layout
+
+\begin_layout Plain Layout
+
+Description=ZigBee gateway -- REST API
+\end_layout
+
+\begin_layout Plain Layout
+
+# Wants=deconz-init.service deconz-update.service
+\end_layout
+
+\begin_layout Plain Layout
+
+[Service]
+\end_layout
+
+\begin_layout Plain Layout
+
+User=juergen
+\end_layout
+
+\begin_layout Plain Layout
+
+PermissionsStartOnly=true
+\end_layout
+
+\begin_layout Plain Layout
+
+# ExecStartPre=/bin/chown root:dialout /dev/ttyACM0
+\end_layout
+
+\begin_layout Plain Layout
+
+# ExecStartPre=/bin/chmod 664 /dev/ttyACM0
+\end_layout
+
+\begin_layout Plain Layout
+
+# ExecStartPre=/bin/mkdir -p /run/udev/data
+\end_layout
+
+\begin_layout Plain Layout
+
+# ExecStartPre=/bin/bash -c "/bin/echo -e 'E:ID_VENDOR_ID=1cf1
+\backslash
+nE:ID_MODEL_ID=0030' > /run/udev/data/c166:0"
+\end_layout
+
+\begin_layout Plain Layout
+
+ExecStart=/usr/bin/deCONZ -platform minimal --http-port=80
+\end_layout
+
+\begin_layout Plain Layout
+
+Restart=on-failure
+\end_layout
+
+\begin_layout Plain Layout
+
+StartLimitInterval=60
+\end_layout
+
+\begin_layout Plain Layout
+
+AmbientCapabilities=CAP_NET_BIND_SERVICE CAP_KILL CAP_SYS_BOOT CAP_SYS_TIME
+\end_layout
+
+\begin_layout Plain Layout
+
+[Install]
+\end_layout
+
+\begin_layout Plain Layout
+
+WantedBy=multi-user.target
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Datei deconz.service kopieren: sudo cp deconz.service /etc/systemd/system
+\end_layout
+
+\begin_layout Itemize
+Rechte setzen: sudo chmod 644 /etc/systemd/system/deconz.service
+\end_layout
+
+\begin_layout Itemize
+Neu laden: sudo systemctl daemon-reload
+\end_layout
+
+\begin_layout Itemize
+Enablen: sudo systemctl enable deconz.service
+\end_layout
+
+\begin_layout Itemize
+Starten: sudo systemctl start deconz.service
+\end_layout
+
+\begin_layout Itemize
+Log: sudo journalctl -u deconz.service -f
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+GUI starten: /usr/bin/deconz-run.sh
+\end_layout
+
+\begin_layout Itemize
+Z.B.
+ lokale IP (z.B.: http://192.168.178.89) holen mit: curl -X GET -i 
+\begin_inset Quotes gld
+\end_inset
+
+https://phoscon.de/discover
+\begin_inset Quotes grd
+\end_inset
+
+ ???? Geht nicht immer?
+\end_layout
+
+\begin_layout Itemize
+API-Key: POST http://192.168.178.89/api mit Body { "devicetype": "my application"}
+\end_layout
+
+\begin_layout Itemize
+API-Keys: 8828C3297C, 93EBE12839, E26A688C02, 4ED78828C3
+\end_layout
+
+\begin_layout Itemize
+Alle Sensoren listen: http://192.168.178.89/api/4ED78828C3/sensors
+\end_layout
+
+\begin_layout Itemize
+Konfiguration lesen: GET /api/<apikey>/config
+\end_layout
+
+\begin_layout Itemize
+Sensordokumentation AQUARA-Sensor:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+How often does the Aqara Temperature and Humidity Sensor upload data? 
+\end_layout
+
+\begin_layout Itemize
+If the temperature, humidity and atmospheric pressure vary only a bit, data
+ will be reported once an hour.
+ If the temperature variation exceeds 0.5℃ (1℉), the humidity variation exceeds
+ 6% and the atmospheric pressure is no less than 25hPa, data will be reported
+ instantly.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Original-Phoscon-Image: User: pi, Passwort: raspbeegw
+\end_layout
+
+\begin_layout Itemize
+User:Passwort=delight:delight
+\end_layout
+
+\begin_layout Itemize
+Andere ZigBee-SW: ZigBee2MQTT
+\end_layout
+
+\begin_layout Itemize
+https://github.com/dresden-elektronik/deconz-rest-plugin/wiki/deCONZ-for-Dummies
+\end_layout
+
+\begin_layout Itemize
+https://phoscon.de/deconz-cpp/dd/da7/group__zcl.html#zcl_intro (ZCL: ZigBee
+ Cluster Library)
+\end_layout
+
+\begin_layout Itemize
+Frient Smart Humidity Sensor, Feuchtigkeitssensor, 
+\begin_inset Formula $\pm$
+\end_inset
+
+0.1°
+\end_layout
+
+\begin_layout Itemize
+Kaputte Firmware Conbee II: 26720700.
+ Genau die habe ich! Nächst ältere ist: 26780700
+\end_layout
+
+\begin_layout Itemize
+Conbee II flashen:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Firmware ist unter: https://deconz.dresden-elektronik.de/deconz-firmware
+\end_layout
+
+\begin_layout Itemize
+Firmware holen: wget https://deconz.dresden-elektronik.de/deconz-firmware/deCONZ_C
+onBeeII_0x26780700.bin.GCF
+\end_layout
+
+\begin_layout Itemize
+Modemmanager stoppen: sudo systemctl stop ModemManager
+\end_layout
+
+\begin_layout Itemize
+Flashen: sudo GCFFlasher_internal -t 60 -d /dev/ttyACM0 -f deCONZ_ConBeeII_0x267
+80700.bin.GCF
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+RasberryPi rebooten und 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Quotes gld
+\end_inset
+
+sudo systemctl start deconz.service
+\begin_inset Quotes grd
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Quotes gld
+\end_inset
+
+sudo systemctl start Sensors.service
+\begin_inset Quotes grd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+ausführen.
+ Evtl.
+ 
+\begin_inset Quotes gld
+\end_inset
+
+start
+\begin_inset Quotes grd
+\end_inset
+
+ durch 
+\begin_inset Quotes gld
+\end_inset
+
+enable
+\begin_inset Quotes grd
+\end_inset
+
+ ersetzen, dann wird nach reboot gestartet.
+\end_layout
+
+\end_deeper
+\end_body
+\end_document

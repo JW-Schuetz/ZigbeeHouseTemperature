@@ -1,0 +1,1106 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip 0bp
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Doku 
+\begin_inset Quotes eld
+\end_inset
+
+TemperaturePollService
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Jürgen Womser-Schütz
+\end_layout
+
+\begin_layout Abstract
+Der 
+\begin_inset Quotes eld
+\end_inset
+
+TemperaturePollService
+\begin_inset Quotes erd
+\end_inset
+
+ ist eine kleine Linux-Applikation, die periodisch von einer Zigbee-Basisstation
+ Sensordaten abruft.
+ Der Basisstation bekannt sind 2 Sensoren, die beide jeweils Lufttemperatur,
+ Luftdruck und Luftfeuchtigkeit messen.
+ Einer der Sensoren befindet sich im Wohnzimmer, das andere auf der Terasse
+ im Freien.
+ Die Zigbee-Basisstation ist durch einen Zigbee-USB-Stick zusammen mit einer
+ Linux-Maschine, einem Rasberry-Pi Einplatinencomputer realisiert.
+ Der 
+\begin_inset Quotes eld
+\end_inset
+
+TemperaturePollService
+\begin_inset Quotes erd
+\end_inset
+
+ kann auf einer beliebigen Linux-Maschine im Netzwerk laufen, wird aber
+ z.Z.
+ ebenfalls auf diesem Rasberry-Pi ausgeführt.
+\end_layout
+
+\begin_layout Subsection*
+SW-Beschreibung
+\end_layout
+
+\begin_layout Standard
+Es wird ein Linux-Timer erzeugt, der alle 900 Sekunden ein Signal auslöst.
+ Im Signalhandler wird mittels der Curl-Bibliothek eine Anfrage an das REST-Inte
+rface der Zigbee-Basisstation gesendet.
+ 
+\end_layout
+
+\begin_layout Standard
+Angefragt werden die Messwerte aller bekannter Sensoren.
+ Neben den 2x3 Sensoren für Temperatur, Druck und Feuchte gibt es im Sensordaten
+satz noch einen per Software realisierten Daylight-
+\begin_inset Quotes grd
+\end_inset
+
+Sensor
+\begin_inset Quotes grd
+\end_inset
+
+, dessen Messwerte aber ignoriert werden.
+ Ein Beispieldatensatz ist im Anhang zu finden.
+ 
+\end_layout
+
+\begin_layout Standard
+Im Eventhandler werden die empfangenen Daten der Basisstation mittels Regular-Ex
+pressions geparst.
+ Die Sensor-Messwerte werden zusammen mit der Zeitmarke der Abfrage in einer
+ Datei gesammelt.
+ Für jeden Kalendertag wird eine neue Datei erzeugt.
+\end_layout
+
+\begin_layout Standard
+Ebenfalls im Eventhandler wird die um die neuen Messwerte erweiterte Datei
+ per FTP zur Diskstation kopiert.
+ 
+\end_layout
+
+\begin_layout Subsection*
+Anhang
+\end_layout
+
+\begin_layout Standard
+\begin_inset Preview
+
+\begin_layout Standard
+{
+\backslash
+"1
+\backslash
+":{
+\backslash
+"config
+\backslash
+":{
+\backslash
+"configured
+\backslash
+":true,
+\backslash
+"on
+\backslash
+":true,
+\backslash
+"sunriseoffset
+\backslash
+":30,
+\backslash
+"sunsetoffset
+\backslash
+":-30},
+\backslash
+"etag
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"2eb0dc2dbb192a4a4a1b12047ffde535
+\backslash
+",
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"Philips
+\backslash
+",
+\backslash
+"modelid
+\backslash
+":
+\backslash
+"PHDL00
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"name
+\backslash
+":
+\backslash
+"Daylight
+\backslash
+",
+\backslash
+"state
+\backslash
+":{
+\backslash
+"dark
+\backslash
+":false,
+\backslash
+"daylight
+\backslash
+":true,
+\backslash
+"lastupdated
+\backslash
+":
+\backslash
+"2023-02-06T11:39:26.049
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"status
+\backslash
+":170,
+\backslash
+"sunrise
+\backslash
+":
+\backslash
+"2023-02-06T06:51:15
+\backslash
+",
+\backslash
+"sunset
+\backslash
+":
+\backslash
+"2023-02-06T16:27:26
+\backslash
+"},
+\backslash
+"swversion
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"1.0
+\backslash
+",
+\backslash
+"type
+\backslash
+":
+\backslash
+"Daylight
+\backslash
+",
+\backslash
+"uniqueid
+\backslash
+":
+\backslash
+"00:21:2e:ff:ff:09:8d:cd-01
+\backslash
+"},
+\backslash
+"20
+\backslash
+":{
+\backslash
+"config
+\backslash
+":{
+\backslash
+"battery
+\backslash
+":75, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"offset
+\backslash
+":0,
+\backslash
+"on
+\backslash
+":true,
+\backslash
+"reachable
+\backslash
+":true},
+\backslash
+"ep
+\backslash
+":1,
+\backslash
+"etag
+\backslash
+":
+\backslash
+"cf02d416ec6564f9be188ce7b9903432
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"lastannounced
+\backslash
+":null,
+\backslash
+"lastseen
+\backslash
+":
+\backslash
+"2023-02-06T14:20Z
+\backslash
+",
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"LUMI
+\backslash
+",
+\backslash
+"modelid
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"lumi.weather
+\backslash
+",
+\backslash
+"name
+\backslash
+":
+\backslash
+"Sensor-2
+\backslash
+",
+\backslash
+"state
+\backslash
+":{
+\backslash
+"humidity
+\backslash
+":6430,
+\backslash
+"lastupdated
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"2023-02-06T14:20:13.741
+\backslash
+"},
+\backslash
+"swversion
+\backslash
+":
+\backslash
+"20191205
+\backslash
+",
+\backslash
+"type
+\backslash
+":
+\backslash
+"ZHAHumidity
+\backslash
+",
+\backslash
+"uniqueid
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"00:15:8d:00:08:c1:19:af-01-0405
+\backslash
+"},
+\backslash
+"21
+\backslash
+":{
+\backslash
+"config
+\backslash
+":{
+\backslash
+"battery
+\backslash
+":75,
+\backslash
+"offset
+\backslash
+":0, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"on
+\backslash
+":true,
+\backslash
+"reachable
+\backslash
+":true},
+\backslash
+"ep
+\backslash
+":1,
+\backslash
+"etag
+\backslash
+":
+\backslash
+"54fb6ed335f4841e074a9c941b50e6f4
+\backslash
+",
+\backslash
+"lastannounced
+\backslash
+" 
+\end_layout
+
+\begin_layout Standard
+:null,
+\backslash
+"lastseen
+\backslash
+":
+\backslash
+"2023-02-06T14:20Z
+\backslash
+",
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"LUMI
+\backslash
+",
+\backslash
+"modelid
+\backslash
+":
+\backslash
+"lumi.weather
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"name
+\backslash
+":
+\backslash
+"Sensor-2
+\backslash
+",
+\backslash
+"state
+\backslash
+":{
+\backslash
+"lastupdated
+\backslash
+":
+\backslash
+"2023-02-06T14:20:13.697
+\backslash
+",
+\backslash
+"temperature
+\backslash
+":585}, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"swversion
+\backslash
+":
+\backslash
+"20191205
+\backslash
+",
+\backslash
+"type
+\backslash
+":
+\backslash
+"ZHATemperature
+\backslash
+",
+\backslash
+"uniqueid
+\backslash
+":
+\backslash
+"00:15:8d:00:08:c1:19:af-01-0402
+\backslash
+"}, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"22
+\backslash
+":{
+\backslash
+"config
+\backslash
+":{
+\backslash
+"battery
+\backslash
+":75,
+\backslash
+"offset
+\backslash
+":0,
+\backslash
+"on
+\backslash
+":true,
+\backslash
+"reachable
+\backslash
+":true},
+\backslash
+"ep
+\backslash
+":1,
+\backslash
+"etag
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"33a5432b00cf9fd029441d8e754b4063
+\backslash
+",
+\backslash
+"lastannounced
+\backslash
+":null,
+\backslash
+"lastseen
+\backslash
+":
+\backslash
+"2023-02-06T14:20Z
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"LUMI
+\backslash
+",
+\backslash
+"modelid
+\backslash
+":
+\backslash
+"lumi.weather
+\backslash
+",
+\backslash
+"name
+\backslash
+":
+\backslash
+"Sensor-2
+\backslash
+",
+\backslash
+"state
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+{
+\backslash
+"lastupdated
+\backslash
+":
+\backslash
+"2023-02-06T14:20:13.790
+\backslash
+",
+\backslash
+"pressure
+\backslash
+":1020},
+\backslash
+"swversion
+\backslash
+":
+\backslash
+"20191205
+\backslash
+",
+\backslash
+"type
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"ZHAPressure
+\backslash
+",
+\backslash
+"uniqueid
+\backslash
+":
+\backslash
+"00:15:8d:00:08:c1:19:af-01-0403
+\backslash
+"},
+\backslash
+"23
+\backslash
+":{
+\backslash
+"config
+\backslash
+":{
+\backslash
+"battery
+\backslash
+":85, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"offset
+\backslash
+":0,
+\backslash
+"on
+\backslash
+":true,
+\backslash
+"reachable
+\backslash
+":true},
+\backslash
+"ep
+\backslash
+":1,
+\backslash
+"etag
+\backslash
+":
+\backslash
+"2d87330a553f6bda700c5a0e5d1de620
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"lastannounced
+\backslash
+":null,
+\backslash
+"lastseen
+\backslash
+":
+\backslash
+"2023-02-06T14:39Z
+\backslash
+",
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"LUMI
+\backslash
+",
+\backslash
+"modelid
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"lumi.weather
+\backslash
+",
+\backslash
+"name
+\backslash
+":
+\backslash
+"Sensor-1
+\backslash
+",
+\backslash
+"state
+\backslash
+":{
+\backslash
+"humidity
+\backslash
+":3900,
+\backslash
+"lastupdated
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"2023-02-06T14:30:34.109
+\backslash
+"},
+\backslash
+"swversion
+\backslash
+":
+\backslash
+"20191205
+\backslash
+",
+\backslash
+"type
+\backslash
+":
+\backslash
+"ZHAHumidity
+\backslash
+",
+\backslash
+"uniqueid
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"00:15:8d:00:08:97:85:47-01-0405
+\backslash
+"},
+\backslash
+"24
+\backslash
+":{
+\backslash
+"config
+\backslash
+":{
+\backslash
+"battery
+\backslash
+":85,
+\backslash
+"offset
+\backslash
+":0,
+\backslash
+"on
+\backslash
+":true, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"reachable
+\backslash
+":true},
+\backslash
+"ep
+\backslash
+":1,
+\backslash
+"etag
+\backslash
+":"5cc3b68a910ca77e8b0f522c9099affa
+\backslash
+",
+\backslash
+"lastannounced
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+null,
+\backslash
+"lastseen
+\backslash
+":
+\backslash
+"2023-02-06T14:39Z
+\backslash
+",
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"LUMI
+\backslash
+",
+\backslash
+"modelid
+\backslash
+":
+\backslash
+"lumi.weather
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"name
+\backslash
+":
+\backslash
+"Sensor-1
+\backslash
+",
+\backslash
+"state
+\backslash
+":{
+\backslash
+"lastupdated
+\backslash
+":
+\backslash
+"2023-02-06T14:30:34.087
+\backslash
+",
+\backslash
+"temperature
+\backslash
+":2101}, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"swversion
+\backslash
+":
+\backslash
+"20191205
+\backslash
+",
+\backslash
+"type
+\backslash
+":
+\backslash
+"ZHATemperature
+\backslash
+",
+\backslash
+"uniqueid
+\backslash
+":
+\backslash
+"00:15:8d:00:08:97:85:47 
+\end_layout
+
+\begin_layout Standard
+-01-0402
+\backslash
+"},
+\backslash
+"25
+\backslash
+":{
+\backslash
+"config
+\backslash
+":{
+\backslash
+"battery
+\backslash
+":85,
+\backslash
+"offset
+\backslash
+":0,
+\backslash
+"on
+\backslash
+":true,
+\backslash
+"reachable
+\backslash
+":true},
+\backslash
+"ep
+\backslash
+":1, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"etag
+\backslash
+":
+\backslash
+"f296fc741dc73eecd91afe7b614dbfdf
+\backslash
+",
+\backslash
+"lastannounced
+\backslash
+":null,
+\backslash
+"lastseen
+\backslash
+":
+\backslash
+"2023-02-06T 
+\end_layout
+
+\begin_layout Standard
+14:39Z
+\backslash
+",
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"LUMI
+\backslash
+",
+\backslash
+"modelid
+\backslash
+":
+\backslash
+"lumi.weather
+\backslash
+",
+\backslash
+"name
+\backslash
+":
+\backslash
+"Sensor-1
+\backslash
+",
+\backslash
+"state
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+{
+\backslash
+"lastupdated
+\backslash
+":
+\backslash
+"2023-02-06T14:30:34.119
+\backslash
+",
+\backslash
+"pressure
+\backslash
+":1018},
+\backslash
+"swversion
+\backslash
+":
+\backslash
+"20191205
+\backslash
+",
+\backslash
+"type
+\backslash
+": 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"ZHAPressure
+\backslash
+",
+\backslash
+"uniqueid
+\backslash
+":
+\backslash
+"00:15:8d:00:08:97:85:47-01-0403
+\backslash
+"}}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

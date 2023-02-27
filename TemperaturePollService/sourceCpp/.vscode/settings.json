@@ -1,0 +1,16 @@
+{
+    "screencastMode.fontSize": 20,
+    "markdown.preview.fontSize": 10,
+    "files.associations": {
+        "thread": "cpp",
+        "executor": "cpp",
+        "ratio": "cpp",
+        "chrono": "cpp",
+        "*.tcc": "cpp",
+        "new": "cpp",
+        "vector": "cpp",
+        "cstddef": "cpp",
+        "limits": "cpp",
+        "cstdio": "cpp"
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "*.tcc": "c",
+        "type_traits": "c",
+        "cstdlib": "c",
+        "exception": "c",
+        "cmath": "c",
+        "limits": "c",
+        "typeinfo": "c",
+        "sensors.h": "c",
+        "new": "c",
+        "cctype": "c",
+        "climits": "c",
+        "compare": "c",
+        "concepts": "c",
+        "cstdarg": "c",
+        "cstdio": "c",
+        "cstdint": "c"
+    },
+    "editor.fontSize": 12,
+    "scm.inputFontSize": 7,
+    "debug.console.fontSize": 7,
+    "screencastMode.fontSize": 20,
+    "markdown.preview.fontSize": 7,
+    "terminal.integrated.fontSize": 10,
+    "notebook.outputLineHeight": 7
+}
