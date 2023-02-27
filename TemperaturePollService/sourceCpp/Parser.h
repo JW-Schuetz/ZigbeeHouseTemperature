@@ -9,6 +9,8 @@
 using std::string;
 
 
+#define ARRAY_SIZE(arr) (sizeof((arr)) / sizeof((arr)[0]))
+
 typedef enum
 {
   SENSOR_OK = 0,               // alles OK

@@ -15,7 +15,7 @@ $(BIN): $(OBJ)
 Main.o: Sensors.h
 Sensors.o: Sensors.h Credentials.h Parser.h
 Sensor.o: Sensor.h
-Parser.o: Parser.h Common.h Regexp.h
+Parser.o: Parser.h Regexp.h
 Regexp.o: Regexp.h Sensors.h
 
 clean:

@@ -4,6 +4,7 @@
 
 
 // initialized storage for static data-members
+
 duration<int,ratio<1,1>> Sensors::sleep_time { TIMER_REPEAT_TIME };
 
 string Sensors::rawDataString {};
@@ -19,31 +20,7 @@ string Sensors::fileName {};
 string Sensors::remoteFileName {};
 FILE *Sensors::fileToSend {};
 
-
-Sensors::Sensors()
-{
-  setTime( &actTime );    // initialize both time stamps
-  oldTime = actTime;
-
-  generateFileNames();    // initialize filenames
-
-  // initialize static class data
-  CURLcode ret = curl_global_init( CURL_GLOBAL_ALL ); // curl global init
-  if( ret != CURLE_OK ) throw;
-
-  construct_poll_handle();
-  parser = new Parser();
-}
-
-
-Sensors::~Sensors()
-{
-  delete parser;
-  destruct_poll_handle();
-
-  curl_global_cleanup();  // curl global cleanup
-}
-
+// private functions
 
 size_t Sensors::write_data( void *buffer, size_t size, size_t nmemb, void *userp )
 {
@@ -169,28 +146,6 @@ void Sensors::parseSensorsData()
 }
 
 
-void Sensors::executionloop()
-{
-#ifdef DEBUG
-  int count = 0;
-  while( count <= 3 )
-  {
-    ++count;
-#else
-  while( true )
-  {
-#endif
-    manageTime();       // get actual timestamp and provide actual filename for file transfer to NAS
-    getRawDataString(); // read Zigbee gateways REST-API to get the rawdata string containing all sensors
-    parseSensorsData(); // parse this rawdata string
-    writeDataToFile();  // write parsed sensor data into file
-    transferDataFile(); // FTP-transfer of file to NAS
-
-    this_thread::sleep_for( sleep_time ); // wait TIMER_REPEAT_TIME seconds
-  }
-}
-
-
 void Sensors::manageTime()  // get actual timestamp and provide actual filename for file transfer to NAS
 {
   oldTime = actTime;
@@ -199,6 +154,7 @@ void Sensors::manageTime()  // get actual timestamp and provide actual filename 
   // change of calender day -> create new filenames
   if( oldTime.tm_mday != actTime.tm_mday ) generateFileNames();
 }
+
 
 void Sensors::generateFileNames()
 {
@@ -299,4 +255,52 @@ void Sensors::writeDataToFile()
 
   int ret = fclose( file );
   if( ret != 0 ) throw;
+}
+
+// public functions
+
+Sensors::Sensors()
+{
+  setTime( &actTime );    // initialize both time stamps
+  oldTime = actTime;
+
+  generateFileNames();    // initialize filenames
+
+  // initialize static class data
+  CURLcode ret = curl_global_init( CURL_GLOBAL_ALL ); // curl global init
+  if( ret != CURLE_OK ) throw;
+
+  construct_poll_handle();
+  parser = new Parser();
+}
+
+
+Sensors::~Sensors()
+{
+  delete parser;
+  destruct_poll_handle();
+
+  curl_global_cleanup();  // curl global cleanup
+}
+
+
+void Sensors::executionloop()
+{
+#ifdef DEBUG
+  int count = 0;
+  while( count <= 3 )
+  {
+    ++count;
+#else
+  while( true )
+  {
+#endif
+    manageTime();       // get actual timestamp and provide actual filename for file transfer to NAS
+    getRawDataString(); // read Zigbee gateways REST-API to get the rawdata string containing all sensors
+    parseSensorsData(); // parse this rawdata string
+    writeDataToFile();  // write parsed sensor data into file
+    transferDataFile(); // FTP-transfer this file to NAS
+
+    this_thread::sleep_for( sleep_time ); // wait TIMER_REPEAT_TIME seconds
+  }
 }
