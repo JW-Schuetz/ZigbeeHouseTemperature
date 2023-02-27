@@ -15,7 +15,7 @@ function [ t, tab1, tab2 ] = readTable( days )
     t    = datetime( now, 'ConvertFrom', 'datenum' );
     jahr = year( t );
 
-    dataDir = [ 'D:\Projekte\HouseTemperature\SensorValues\', sprintf( '%4d\\', jahr ) ];
+    dataDir = [ 'D:\Projekte\ZigbeeHouseTemperature\SensorValues\', sprintf( '%4d\\', jahr ) ];
     files = dir( [ dataDir, '*.csv' ] );
 
     if( isempty( files ) )
