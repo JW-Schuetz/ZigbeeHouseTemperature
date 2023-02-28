@@ -17,7 +17,6 @@ BIN = sensors
 
 $(BIN):		$(OBJ)
 			${CC} $(OBJ) -o $(BIN) ${LNK}
-#			mv $(BIN) .. 
 
 clean:
 		rm -f *.o; rm -f $(BIN)

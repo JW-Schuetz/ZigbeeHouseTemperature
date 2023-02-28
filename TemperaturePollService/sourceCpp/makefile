@@ -12,7 +12,7 @@ $(BIN): $(OBJ)
 %.o: %.cpp	makefile
 			${CC} ${CFLAGS} -c $<
 
-Main.o: Manager.h
+ZigbeeSensors.o: Manager.h
 Manager.o: Manager.h Credentials.h Parser.h Sensor.h
 Parser.o: Parser.h Regexp.h
 Regexp.o: Regexp.h Manager.h

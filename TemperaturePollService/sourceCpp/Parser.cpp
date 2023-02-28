@@ -277,8 +277,6 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( int physSensorsCo
                         regcomp = regexp->getCompiledRegexp( 10 );    // time
                         string t = getDateTime( lastupdated, regcomp );
                         if( t != string() ) sensordata[sens].sensortime = t;
-#ifdef NEVER
-#endif
                     }
                 }
             }
