@@ -47,7 +47,6 @@ private:
     static void generateFileNames();    // generate local and remote filename
     static string manageTime();         // return actual timestamp and provide actual filename for file transfer to NAS
     static void transferDataFile();     // FTP-tansfer file to NAS
-    static void setOwnTime();           // stores actual time stamp
     static string getRawDataString();   // read rawdata string containing data of all Zigbee sensors
     void construct_poll_handle();       // easy handle for Zigbee gateway polling
     void destruct_poll_handle();

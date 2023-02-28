@@ -42,7 +42,7 @@ size_t Manager::write_data( void *buffer, size_t size, size_t nmemb, void *userp
 void Manager::construct_poll_handle()
 {
     poll_handle = curl_easy_init();
-    if( poll_handle == NULL ) throw;
+    if( poll_handle == NULL ) throw( string { "Manager::construct_poll_handle" }  );
 
     // set parameters for reading from URL
     poll_headers = NULL;
@@ -72,7 +72,7 @@ string Manager::getRawDataString()
     content.size = 0;
 
     CURLcode cres = curl_easy_perform( poll_handle );
-    if( cres != CURLE_OK ) throw;
+    if( cres != CURLE_OK ) throw( string { "Manager::getRawDataString" }  );
 
     return string( content.memory.begin(), content.memory.end() );
 }
@@ -132,10 +132,10 @@ void Manager::generateFileNames()
 void Manager::construct_sendfile_handle()
 {
     sendfile_handle = curl_easy_init();
-    if( sendfile_handle == NULL ) throw;
+    if( sendfile_handle == NULL ) throw( string { "Manager::construct_sendfile_handle curl_easy_init" }  );
 
     fileToSend = fopen( fileName.c_str(), "r" );
-    if( fileToSend == NULL ) throw;
+    if( fileToSend == NULL ) throw( string { "Manager::construct_sendfile_handle fopen" }  );
 
     // set parameters for filetransfer to NAS
     curl_easy_setopt( sendfile_handle, CURLOPT_URL, remoteFileName.c_str() );
@@ -149,7 +149,7 @@ void Manager::construct_sendfile_handle()
 void Manager::destruct_sendfile_handle()
 {
     int ret = fclose( fileToSend );
-    if( ret != 0 ) throw;
+    if( ret != 0 ) throw( string { "Manager::destruct_sendfile_handle" }  );
 
     curl_easy_cleanup( sendfile_handle );
 }
@@ -160,7 +160,7 @@ void Manager::transferDataFile()
   construct_sendfile_handle();
 
   CURLcode cres = curl_easy_perform( sendfile_handle );
-  if( cres != CURLE_OK ) throw;
+  if( cres != CURLE_OK ) throw( string { "Manager::transferDataFile" }  );
 
   destruct_sendfile_handle();
 }
@@ -176,7 +176,7 @@ Manager::Manager()
 
   // initialize static class data
   CURLcode ret = curl_global_init( CURL_GLOBAL_ALL ); // curl global init
-  if( ret != CURLE_OK ) throw;
+  if( ret != CURLE_OK ) throw( string { "Manager::Manager" } );
 
   construct_poll_handle();
   parser = new Parser();

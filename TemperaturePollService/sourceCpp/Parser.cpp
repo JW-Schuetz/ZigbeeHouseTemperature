@@ -88,7 +88,7 @@ string Parser::getSensorInternalData( string internal, regex_t regcomp )
 
     string s = internal.substr( endNdx, internal.length() - endNdx );
     const char *p = findMatchingCurlyBrace( s.c_str() );
-    if( p == NULL ) throw;
+    if( p == NULL ) throw( string { "Parser::getSensorInternalData" }  );
 
     string match = s.substr( 0, p - s.c_str() );
 
@@ -156,7 +156,7 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
 
         string s = toBeMatchedNext.substr( endNdx, toBeMatchedNext.length() - endNdx );
         const char *p = findMatchingCurlyBrace( s.c_str() );
-        if( p == NULL ) throw;
+        if( p == NULL ) throw( string { "Parser::getSensorsRawDataStrings" }  );
 
         int len = p - s.c_str();
  
@@ -253,9 +253,6 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( int virtualSensor
   return sensordata;
 }
 
-// TODO: in functions getBatteryCharge, getMeasuredValue, getLastUpdated and
-// getDateTime should use a second reg. expr. match to avoid helper functions
-// like findLastDigitSigned, findNextChar, ...
 
 string Parser::getBatteryCharge( string config, regex_t regcomp )
 {
