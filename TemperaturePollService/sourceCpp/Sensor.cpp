@@ -3,9 +3,13 @@
 
 
 // initialized storage for static data-members
-string Sensor::timeStamp {};
-Parser *Sensor::parser {};                                  // object for parsing strings
-vector<struct PhysicalSensorsData> Sensor::sensorData {};   // parsed data of all sensors
+int Sensor::sensorsOfInterestCount {};  // count of sensors with battery
+int Sensor::virtualSensorsCount {};     // count of virtual sensors
+string Sensor::rawDataString;           // Zigbee's REST-API raw data string containing all sensors and
+vector<struct SensorRawData> Sensor::rawData {};          // rawData for each virtual sensor
+vector<struct PhysicalSensorsData> Sensor::sensorData {}; // parsed data of all sensors
+string Sensor::timeStamp {};                              // timeStamp
+Parser *Sensor::parser {};                                // object for parsing strings
 
 
 Sensor::Sensor()
@@ -20,15 +24,16 @@ Sensor::~Sensor()
 }
 
 
-void Sensor::parseSensorsData( string rawDataString, string time )
+void Sensor::parseSensorsData( string raw, string time )
 {
+    rawDataString = raw;
     timeStamp = time;
 
     // argument: Zigbee's REST-API raw data string
     // parse rawdata string containing all sensors and
     // separate individual rawdata strings for each sensor
-    auto rawData = parser->getSensorsRawDataStrings( rawDataString );
-    int virtualSensorsCount = rawData.size();
+    rawData = parser->getSensorsRawDataStrings( rawDataString );
+    virtualSensorsCount = rawData.size();
 
     // parse individual rawdata string for each sensor for getting
     // sensors name, config- and state-strings and wether it is interesting
@@ -41,7 +46,7 @@ void Sensor::parseSensorsData( string rawDataString, string time )
     }
 
     // count interesting sensors (those with a battery!)
-    int sensorsOfInterestCount = 0;
+    sensorsOfInterestCount = 0;
     for( auto & iter: rawData )
       if( iter.interesting )
         ++sensorsOfInterestCount;
@@ -50,17 +55,14 @@ void Sensor::parseSensorsData( string rawDataString, string time )
     // for temperature, pressure and humidity
     if( sensorsOfInterestCount % 3 != 0 ) throw;
 
-    int physSensorsCount = sensorsOfInterestCount / 3;
-
     // determine the sensors names (they must be unique)
     int sensorsNamesCount = 0;
     auto sensorNames = parser->sensorsNames( virtualSensorsCount, rawData, &sensorsNamesCount );
 
-    // plausibility-check
-    if( sensorsNamesCount != physSensorsCount ) throw;
+    // plausibility-check: count of phys. sensors must be count of interesting sensors div. by 3
+    if( sensorsNamesCount != sensorsOfInterestCount / 3 ) throw;
 
-    sensorData = parser->getMeasurementData( physSensorsCount, virtualSensorsCount, 
-      sensorNames, rawData, timeStamp );
+    sensorData = parser->getMeasurementData( virtualSensorsCount, sensorNames, rawData, timeStamp );
 }
 
 

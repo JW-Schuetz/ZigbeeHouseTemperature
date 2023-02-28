@@ -24,8 +24,8 @@ class Regexp
         "\"lastupdated\":",                     //  8
         "[0-9]{4}-[0-9]{2}-[0-9]{2}",           //  9
         "[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}",  // 10
-        "[0-9-]{1,}",                           // 11
-        "[0-9a-zA-Z-]{1,}",                     // 12   specification of allowed sensornames
+        "[-]*[0-9]{1,}",                        // 11
+        "[0-9a-zA-Z_-]{4,}",                    // 12   -> specification of allowed sensornames
     };
 
     regex_t *regex_compiled;        // translations

@@ -176,10 +176,11 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
 }
 
 
-vector<struct PhysicalSensorsData> Parser::getMeasurementData( int physSensorsCount, 
-    int virtualSensorsCount, vector<string> sensorNames, vector<struct SensorRawData> rawData,
-    string ownTime )
+vector<struct PhysicalSensorsData> Parser::getMeasurementData( int virtualSensorsCount, 
+    vector<string> sensorNames, vector<struct SensorRawData> rawData, string ownTime )
 {
+    int physSensorsCount = sensorNames.size();
+
     vector<struct PhysicalSensorsData> sensordata(physSensorsCount);
 
     // for every physical sensor parse rawDataString
@@ -290,19 +291,14 @@ string Parser::getMeasuredValue( string state, regex_t regcomp )
   int ret = regexec( &regcomp, state.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
   if( ret == 0 )
   {
-    int startNdx = pmatch[0].rm_so; // index to first matched char
     int endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
-
     string s = state.substr( endNdx, state.length() - endNdx );
 
     auto regcomp1 = regexp->getCompiledRegexp( 11 );    // at least one signed integer
-
     int ret = regexec( &regcomp1, s.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
     if( ret == 0 )
     {
-      startNdx = pmatch[0].rm_so; // index to first matched char
       endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
-
       return s.substr( 0, endNdx );
     }
   }
@@ -318,9 +314,7 @@ string Parser::getLastUpdated( string state, regex_t regcomp )
   int ret = regexec( &regcomp, state.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
   if( ret == 0 )
   {
-    int startNdx = pmatch[0].rm_so; // index to first matched char
     int endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
-
     return state.substr( endNdx, state.length() - endNdx );
   }
 
