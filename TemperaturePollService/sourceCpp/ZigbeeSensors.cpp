@@ -1,16 +1,16 @@
 
 #include <thread>
-#include "Sensors.h"
+#include "Manager.h"
 
 
 int main()
 {
-  Sensors *sensors = new Sensors();
+  Manager *manager = new Manager();
 
-  thread sThread { sensors->executionloop };  // create thread
+  thread sThread { manager->executionloop };  // create thread
   if( sThread.joinable() ) sThread.join();          // wait for threads ending
 
   // following code should never be reached
-  delete sensors;
+  delete manager;
   return -1;
 }

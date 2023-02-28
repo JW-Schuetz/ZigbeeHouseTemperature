@@ -4,6 +4,7 @@
 #include "Curl.h"
 #include "Credentials.h"
 #include "Parser.h"
+#include "Sensor.h"
 
 
 //#define DEBUG                               // debugging enabled
@@ -16,7 +17,7 @@
 #ifdef DEBUG
   #define FILENAME_PREFIX     "SensorTestValues-"
 #else
-  #define FILENAME_PREFIX     "SensorValues-"
+  #define FILENAME_PREFIX     "SensorValuesCpp-"
 #endif
 
 #define FILENAME_POSTFIX    ".csv"
@@ -32,24 +33,22 @@ struct WriteMemoryStruct
 };
 
 
-class Sensors
+class Manager
 {
 public:
     // public functions
-    Sensors();
-    ~Sensors();
+    Manager();
+    ~Manager();
 
     static void executionloop();        // endless execution-loop
 
 private:
     // private functions
     static void generateFileNames();    // generate local and remote filename
-    static void manageTime();           // get actual timestamp and provide actual filename for file transfer to NAS
-    static void writeDataToFile();      // write sensor data into file
+    static string manageTime();         // return actual timestamp and provide actual filename for file transfer to NAS
     static void transferDataFile();     // FTP-tansfer file to NAS
-    static void parseSensorsData();     // parse data of all sensors
     static void setOwnTime();           // stores actual time stamp
-    static void getRawDataString();     // rawdata string containing data of all Zigbee sensors
+    static string getRawDataString();   // read rawdata string containing data of all Zigbee sensors
     void construct_poll_handle();       // easy handle for Zigbee gateway polling
     void destruct_poll_handle();
     static void construct_sendfile_handle();    // easy handle for sending file to NAS
@@ -70,7 +69,5 @@ private:
     static CURLM *poll_handle;                              // easy_handle for reading URL
     static CURLM *sendfile_handle;                          // easy_handle for sending file to NAS
     static Parser *parser;                                  // object for parsing strings
-
-    static string rawDataString;                            // Zigbee's REST-API raw data string
-    static vector<struct PhysicalSensorsData> sensorData;   // parsed data of all sensors
+    static Sensor *sensor;                                  // sensor object
 };
