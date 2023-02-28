@@ -9,21 +9,23 @@ using namespace std;
 
 class Regexp
 {
-    static const int N = 11;
+    static const int N = 13;
 
     string regexp[N] =  // regexp's to be translated
     {
-        "\"[0-9]{1,2}\":",                          // sensor raw data
-        "\"name\":",
-        "\"config\":",
-        "\"state\":",
-        "\"battery\":",
-        "\"humidity\":",
-        "\"pressure\":",
-        "\"temperature\":",
-        "\"lastupdated\":",
-        "[0-9]{4}-[0-9]{2}-[0-9]{2}",
-        "[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}",
+        "\"[0-9]{1,2}\":",                      //  0
+        "\"name\":",                            //  1
+        "\"config\":",                          //  2
+        "\"state\":",                           //  3
+        "\"battery\":",                         //  4
+        "\"humidity\":",                        //  5
+        "\"pressure\":",                        //  6
+        "\"temperature\":",                     //  7
+        "\"lastupdated\":",                     //  8
+        "[0-9]{4}-[0-9]{2}-[0-9]{2}",           //  9
+        "[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}",  // 10
+        "[0-9-]{1,}",                           // 11
+        "[0-9a-zA-Z-]{1,}",                     // 12   specification of allowed sensornames
     };
 
     regex_t *regex_compiled;        // translations

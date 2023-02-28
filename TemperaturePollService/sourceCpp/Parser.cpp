@@ -14,45 +14,6 @@ Parser::~Parser()
 }
 
 
-const char *Parser::findNextChar( const char *p, char s )
-{
-    char c = *p;                    // read first char
-
-    if( c == 0 ) return NULL;       // is it end of string: return error
-
-    while( true )
-    {
-      c = *(++p);                   // read next char
-
-      if( c == 0 ) return NULL;     // end of string reached
-      if( c == s ) break;
-    }
-
-    return p;
-}
-
-
-const char *Parser::findLastDigitSigned( const char *p )
-{
-    char c = *p;                            // read first char
-
-    if( c == 0 ) return NULL;               // is it end of string: return error
-
-    if( isdigit( c ) == 0 && ( c != '-' ) ) // first char may be '-'
-      return NULL;
-
-    while( 1 )
-    {
-      c = *(++p);                           // read next char
-
-      if( isdigit( c ) == 0 ) break;
-      if( c == 0 ) return NULL;             // end of string reached
-    }
-
-    return p - 1;   // pointer to last char of signed digit
-}
-
-
 const char *Parser::findMatchingCurlyBrace( const char *p )
 {
     char c = *p;                    // read first char
@@ -81,21 +42,25 @@ const char *Parser::findMatchingCurlyBrace( const char *p )
 
 string Parser::getSensorName( string config )
 {
-    regex_t regcomp = regexp->getCompiledRegexp( 1 ); // sensor name
+    regex_t regcomp1 = regexp->getCompiledRegexp( 1 );  // sensor name
+    regex_t regcomp2 = regexp->getCompiledRegexp( 12 ); // specification of allowed sensornames
 
     regmatch_t pmatch[1];
-    int ret = regexec( &regcomp, config.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
+    int ret = regexec( &regcomp1, config.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
     if( ret != 0 ) return string();         // no name available
 
+    int startNdx = pmatch[0].rm_so; // index to first matched char
     int endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
 
     string s = config.substr( endNdx, config.length() - endNdx );
-    const char *p = findNextChar( s.c_str(), ',' );
-    if( p == NULL ) throw;
 
-    string match = s.substr( 0, p - s.c_str() );
+    ret = regexec( &regcomp2, s.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
+    if( ret != 0 ) return string();         // no name available
 
-    return string( match.begin() + 1, match.end() - 1 );
+    startNdx = pmatch[0].rm_so; // index to first matched char
+    endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
+
+    return s.substr( startNdx, endNdx - 1 );
 }
 
 
@@ -287,7 +252,7 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( int physSensorsCo
   return sensordata;
 }
 
-// TODO: in fuctions getBatteryCharge, getMeasuredValue, getLastUpdated and
+// TODO: in functions getBatteryCharge, getMeasuredValue, getLastUpdated and
 // getDateTime should use a second reg. expr. match to avoid helper functions
 // like findLastDigitSigned, findNextChar, ...
 
@@ -296,16 +261,22 @@ string Parser::getBatteryCharge( string config, regex_t regcomp )
   regmatch_t pmatch[1];
 
   int ret = regexec( &regcomp, config.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
-  if( ret == 0 )  // battery should be always there (sensor is interesting), but for security :-)
+  if( ret == 0 )  // battery should be always there (sensor is interesting) but anyway
   {
     int startNdx = pmatch[0].rm_so; // index to first matched char
     int endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
 
     string s = config.substr( endNdx, config.length() - endNdx );
-    const char *p = findLastDigitSigned( s.c_str() );
-    if( p == NULL ) throw;
 
-    return s.substr( 0, p - s.c_str() + 1 );
+    auto regcomp1 = regexp->getCompiledRegexp( 11 );    // at least one signed integer
+    ret = regexec( &regcomp1, s.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
+    if( ret == 0 )
+    {
+      startNdx = pmatch[0].rm_so; // index to first matched char
+      endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
+
+      return s.substr( startNdx, endNdx );
+    }
   }
 
   return string();
@@ -323,10 +294,17 @@ string Parser::getMeasuredValue( string state, regex_t regcomp )
     int endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
 
     string s = state.substr( endNdx, state.length() - endNdx );
-    const char *p = findLastDigitSigned( s.c_str() );
-    if( p == NULL ) throw;
 
-    return s.substr( 0, p - s.c_str() + 1 );
+    auto regcomp1 = regexp->getCompiledRegexp( 11 );    // at least one signed integer
+
+    int ret = regexec( &regcomp1, s.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
+    if( ret == 0 )
+    {
+      startNdx = pmatch[0].rm_so; // index to first matched char
+      endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
+
+      return s.substr( 0, endNdx );
+    }
   }
 
   return string();
@@ -343,11 +321,7 @@ string Parser::getLastUpdated( string state, regex_t regcomp )
     int startNdx = pmatch[0].rm_so; // index to first matched char
     int endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
 
-    string s = state.substr( endNdx, state.length() - endNdx );
-    const char *p = findNextChar( state.c_str(), '\"' );
-    if( p == NULL ) throw;
-
-    return s.substr( 0, p - s.c_str() + 1 );
+    return state.substr( endNdx, state.length() - endNdx );
   }
 
   return string();

@@ -64,8 +64,6 @@ public:
 private:
     // private functions
     const char *findMatchingCurlyBrace( const char * );
-    const char *findLastDigitSigned( const char *p );
-    const char *findNextChar( const char *, char );
     string getSensorInternalData( string, regex_t );
     string getBatteryCharge( string config, regex_t );
     string getMeasuredValue( string state, regex_t );
