@@ -18,7 +18,7 @@ int main()
   }
   catch( string e )
   {
-    std::cerr << e << '\n\n';
+    std::cerr << e << '\n';
   }
 
   return -1;
