@@ -17,7 +17,7 @@
 #ifdef DEBUG
   #define FILENAME_PREFIX     "SensorTestValues-"
 #else
-  #define FILENAME_PREFIX     "SensorValuesCpp-"
+  #define FILENAME_PREFIX     "SensorValues-"
 #endif
 
 #define FILENAME_POSTFIX    ".csv"

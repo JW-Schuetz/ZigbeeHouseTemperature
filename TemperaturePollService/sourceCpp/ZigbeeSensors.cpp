@@ -18,7 +18,7 @@ int main()
   }
   catch( string e )
   {
-    std::cerr << e << '\n';
+    std::cerr << "Runtime exception at: " << e << '\n'<< '\n';
   }
 
   return -1;
