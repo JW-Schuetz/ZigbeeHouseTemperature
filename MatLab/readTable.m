@@ -38,8 +38,11 @@ function [ t, tab1, tab2 ] = readTable( days )
         tab = [ tab; A ]; %#ok<AGROW> 
     end
 
+    % tab aufwärts sortieren nach Zeitstempel
+    [ t, ndx ] = sort( tab.Zeitstempel );
+    tab = tab( ndx, : );
+
     % nur die letzten "days" Tage auswerten
-    t   = tab.Zeitstempel;
     ndx = isbetween( t, t - days, t );
     tab = tab( ndx, : );
 
