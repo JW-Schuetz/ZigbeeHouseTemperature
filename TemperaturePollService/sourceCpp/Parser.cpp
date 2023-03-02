@@ -98,7 +98,7 @@ string Parser::getSensorInternalData( string internal, regex_t regcomp )
 
 int Parser::isInterestingSensor( string config )
 {
-    regex_t regcomp = regexp->getCompiledRegexp( 4 ); // battery
+    regex_t regcomp = regexp->getCompiledRegexp( 4 ); // regex for battery
 
     regmatch_t pmatch[1];
     int ret = regexec( &regcomp, config.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
@@ -118,18 +118,18 @@ vector<string> Parser::sensorsNames( int virtSensorCount, vector<struct SensorRa
     for( int sens = 0; sens < virtSensorCount; ++sens )
     {
         // name
-        if( sdata[sens].interesting != 0 )   // nur Sensoren mit Auswertung
+        if( sdata[sens].interesting != 0 )   // only interesting sensors (with a battery)
         {
             string nameVirtSensor = sdata[sens].name;
 
-            // nameVirtSensor noch nicht in **sensorsNames enthalten?
+            // nameVirtSensor yet contained in sensorsNames?
             int hit = 0;
             for( int n = 0; n < *sensorsNamesCount; ++n )
                 if( sensorsNames[n] == nameVirtSensor ) ++hit;
 
             if( hit == 0 )
             {
-                ++(*sensorsNamesCount);     // neuer SensorName
+                ++(*sensorsNamesCount);     // new sensor name: count it
                 sensorsNames.push_back( nameVirtSensor );
             }
         }
@@ -142,7 +142,7 @@ vector<string> Parser::sensorsNames( int virtSensorCount, vector<struct SensorRa
 vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
 {
     regmatch_t pmatch[1];
-    regex_t regcomp = regexp->getCompiledRegexp( 0 ); // sensor rawdata string
+    regex_t regcomp = regexp->getCompiledRegexp( 0 ); // regex for sensor rawdata string
 
     string toBeMatchedNext = rawData;
     vector<struct SensorRawData> sensorRawDataVector = {};
@@ -162,7 +162,7 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
  
         string match = s.substr( 0, len + 1 );
 
-        // initialize structure, remove leading "{" and terminating "}"
+        // initialize structure, removing leading "{" and terminating "}"
         struct SensorRawData sensorRawData = {};
         sensorRawData.allData = string( match.begin() + 1, match.end() - 1 );
 
@@ -195,32 +195,32 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( int virtualSensor
         // accumulate data of all virtual sensors with equal name
         for( int n = 0; n < virtualSensorsCount; ++n )
         {
-            if( rawData[n].interesting != 0 )   // nur Sensoren mit Auswertung
+            if( rawData[n].interesting != 0 )   // only interesting sensors (with a battery)
             {
                 if( sensordata[sens].sensorname == rawData[n].name )
                 {
-                    // batterycharge: nur ein mal eintragen pro phys. Sensor
+                    // batterycharge: write only once for every physical sensor
                     if( sensordata[sens].batterycharge == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 4 );    // battery
                         string b = getBatteryCharge( rawData[n].config, regcomp ); 
                         if( b != string() ) sensordata[sens].batterycharge = b;
                     }
-                    // humidity: nur ein mal eintragen pro phys. Sensor
+                    // humidity: write only once for every physical sensor
                     if( sensordata[sens].humidity == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 5 );    // humidity
                         string r = getMeasuredValue( rawData[n].state, regcomp );
                         if( r != string() ) sensordata[sens].humidity = r;
                     }
-                    // pressure: nur ein mal eintragen pro phys. Sensor
+                    // pressure: write only once for every physical sensor
                     if( sensordata[sens].pressure == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 6 );    // pressure
                         string p = getMeasuredValue( rawData[n].state, regcomp );
                         if( p != string() ) sensordata[sens].pressure = p;
                     }
-                    // temperature: nur ein mal eintragen pro phys. Sensor
+                    // temperature: write only once for every physical sensor
                     if( sensordata[sens].temperature == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 7 );    // temperature
@@ -228,7 +228,7 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( int virtualSensor
                         if( t != string() ) sensordata[sens].temperature = t;
                     }
 
-                    // sensordate, sensortime: nur ein mal eintragen pro phys. Sensor
+                    // sensordate, sensortime: write only once for every physical sensor
                     if( sensordata[sens].sensordate == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 8 );    // lastupdated
@@ -247,7 +247,7 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( int virtualSensor
                 }
             }
         }
-        sensordata[sens].state = SENSOR_OK;   // gültig setzen
+        sensordata[sens].state = SENSOR_OK;   // set valid
   }
 
   return sensordata;

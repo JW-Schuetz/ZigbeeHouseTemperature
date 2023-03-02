@@ -13,22 +13,22 @@ using std::string;
 
 typedef enum
 {
-  SENSOR_OK = 0,               // alles OK
-  SENSOR_CURL,                 // Curl hat Probleme
-  SENSOR_SIG,                  // SIG hat Probleme
-  SENSOR_TIMER,                // Timer hat Problem
-  SENSOR_PARSE,                // Parser hat Problem
-  SENSOR_HW,                   // Hardware hat Probleme
-  SENSOR_MEMORY,               // kein Speicher mehr da
+  SENSOR_OK = 0,               // all OK
+  SENSOR_CURL,                 // curl with problems
+  SENSOR_SIG,                  // SIG with problems
+  SENSOR_TIMER,                // timer with problems
+  SENSOR_PARSE,                // parser with problems
+  SENSOR_HW,                   // hardware with problems
+  SENSOR_MEMORY,               // no more memory available
 } SensorErrorCode;
 
 struct SensorRawData
 {
-  int interesting;    // Sensor mit Datenauswertung 
-  string allData;     // kompletter Sensordaten-String
-  string name;        // darin enthaltener Sensorname
-  string config;      // darin enthaltener Configdaten-String
-  string state;       // darin enthaltener Statedaten-String
+  int interesting;    // interesting sensor with battery 
+  string allData;     // all sensor data
+  string name;        // contained sensor name
+  string config;      // contained config data
+  string state;       // contained state data
 };
 
 struct PhysicalSensorsData

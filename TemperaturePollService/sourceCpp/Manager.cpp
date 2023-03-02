@@ -117,7 +117,7 @@ string Manager::manageTime()  // return actual timestamp and provide actual file
 
 void Manager::generateFileNames()
 {
-    // generate new filename, deconstruct old curl-handle, construct new curl-handle
+    // generate new filename, deconstruct old curl-handle and construct a new one
     fileName = string( FILENAME_PREFIX );
     string datetime = time2string( actTime );
     size_t ndx = datetime.find_first_of( ' ' );
@@ -137,7 +137,7 @@ void Manager::construct_sendfile_handle()
     fileToSend = fopen( fileName.c_str(), "r" );
     if( fileToSend == NULL ) throw( string { "Manager::construct_sendfile_handle fopen" }  );
 
-    // set parameters for filetransfer to NAS
+    // set curls parameters for filetransfer to NAS
     curl_easy_setopt( sendfile_handle, CURLOPT_URL, remoteFileName.c_str() );
     curl_easy_setopt( sendfile_handle, CURLOPT_READDATA, (void *)fileToSend );
     curl_easy_setopt( sendfile_handle, CURLOPT_UPLOAD, 1L );
@@ -174,8 +174,7 @@ Manager::Manager()
 
   generateFileNames();    // initialize filenames
 
-  // initialize static class data
-  CURLcode ret = curl_global_init( CURL_GLOBAL_ALL ); // curl global init
+  CURLcode ret = curl_global_init( CURL_GLOBAL_ALL );
   if( ret != CURLE_OK ) throw( string { "Manager::Manager" } );
 
   construct_poll_handle();
@@ -190,7 +189,7 @@ Manager::~Manager()
   delete parser;
   destruct_poll_handle();
 
-  curl_global_cleanup();  // curl global cleanup
+  curl_global_cleanup();
 }
 
 

@@ -13,7 +13,7 @@ int main()
     thread sThread { manager->executionloop };  // create thread
     if( sThread.joinable() ) sThread.join();    // wait for threads ending
 
-    // following code should never be reached
+    // the following code should never be reached
     delete manager;
   }
   catch( string e )

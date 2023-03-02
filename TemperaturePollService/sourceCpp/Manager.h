@@ -40,7 +40,7 @@ public:
     Manager();
     ~Manager();
 
-    static void executionloop();        // endless execution-loop
+    static void executionloop();        // execution-loop
 
 private:
     // private functions
@@ -53,12 +53,12 @@ private:
     static void construct_sendfile_handle();    // easy handle for sending file to NAS
     static void destruct_sendfile_handle();
     static size_t write_data( void *, size_t, size_t, void * ); // writefunction for curl
-    static void setTime( struct tm * );                     // get time stamp from operation system
-    static string time2string( struct tm );                 // convert time to string
+    static void setTime( struct tm * );                         // get time stamp from operation system
+    static string time2string( struct tm );                     // convert time to string
 
     // private data
     static FILE *fileToSend;                                // file handle of FTP-sent file to NAS
-    static struct tm oldTime;                               // last time stamp
+    static struct tm oldTime;                               // previous time stamp
     static struct tm actTime;                               // actual time stamp
     static duration<int,ratio<1,1>> sleep_time;             // sleeping time
     static string fileName;                                 // actual local filename
