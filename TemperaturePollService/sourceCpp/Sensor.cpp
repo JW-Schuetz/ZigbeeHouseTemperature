@@ -31,7 +31,6 @@ void Sensor::parseSensorsData( string time )
     // parse rawdata string containing all sensors and separate individual
     // rawdata strings for each sensor
     rawData = parser->getSensorsRawDataStrings( rawDataString );
-    virtualSensorsCount = rawData.size();
 
     // parse individual rawdata string for each sensor for getting
     // sensors name, config- and state-strings and test whether 
@@ -57,13 +56,13 @@ void Sensor::parseSensorsData( string time )
 
     // determine the sensors names (the names must be unique)
     int physicalSensorsCount = 0;
-    auto sensorNames = parser->sensorsNames( virtualSensorsCount, rawData, &physicalSensorsCount );
+    auto sensorNames = parser->sensorsNames( rawData, &physicalSensorsCount );
 
     // plausibility-check: count of physical sensors must be count of interesting sensors div. by 3
     if( physicalSensorsCount != sensorsOfInterestCount / 3 )
         throw( string { "Sensor::parseSensorsData physicalSensorsCount" }  );
 
-    sensorData = parser->getMeasurementData( virtualSensorsCount, sensorNames, rawData, timeStamp );
+    sensorData = parser->getMeasurementData( sensorNames, rawData, timeStamp );
 }
 
 
@@ -105,8 +104,7 @@ void Sensor::writeDataToFile( string fileName )
     str = sensorData[i].sensortime;
     fprintf( file, "%s", str.c_str() );
 
-    if( i != sensorData.size() - 1 )
-      fprintf( file, ", " );
+    if( i != sensorData.size() - 1 ) fprintf( file, ", " );
   }
 
   fprintf( file, "\n" );

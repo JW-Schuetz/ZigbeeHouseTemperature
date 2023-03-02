@@ -52,9 +52,9 @@ public:
     Parser();
     ~Parser();
 
-    vector<struct PhysicalSensorsData> getMeasurementData( int, vector<string>,
+    vector<struct PhysicalSensorsData> getMeasurementData( vector<string>,
         vector<struct SensorRawData>, string );
-    vector<string> sensorsNames( int, vector<struct SensorRawData>, int * );
+    vector<string> sensorsNames( vector<struct SensorRawData>, int * );
     vector<struct SensorRawData> getSensorsRawDataStrings( string );
     string getSensorName( string );
     string getSensorConfig( string );

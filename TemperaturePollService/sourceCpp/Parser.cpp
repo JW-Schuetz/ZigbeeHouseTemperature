@@ -108,19 +108,18 @@ int Parser::isInterestingSensor( string config )
 }
 
 
-vector<string> Parser::sensorsNames( int virtSensorCount, vector<struct SensorRawData>sdata,
-            int *sensorsNamesCount )
+vector<string> Parser::sensorsNames( vector<struct SensorRawData>sdata, int *sensorsNamesCount )
 {
     *sensorsNamesCount = 0; // normalize counter
 
     vector<string> sensorsNames;
 
-    for( int sens = 0; sens < virtSensorCount; ++sens )
+    for( auto & iter: sdata )
     {
         // name
-        if( sdata[sens].interesting != 0 )   // only interesting sensors (with a battery)
+        if( iter.interesting != 0 )   // only interesting sensors (with a battery)
         {
-            string nameVirtSensor = sdata[sens].name;
+            string nameVirtSensor = iter.name;
 
             // nameVirtSensor yet contained in sensorsNames?
             int hit = 0;
@@ -162,13 +161,13 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
  
         string match = s.substr( 0, len + 1 );
 
-        // initialize structure, removing leading "{" and terminating "}"
+        // initialize structure, remove leading "{" and terminating "}"
         struct SensorRawData sensorRawData = {};
         sensorRawData.allData = string( match.begin() + 1, match.end() - 1 );
 
         sensorRawDataVector.push_back( sensorRawData );
 
-        // next match pointer
+        // calculate next match pointer
         toBeMatchedNext = string( p + 1, p + ( s.length() - len ) );
     }
 
@@ -176,8 +175,8 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
 }
 
 
-vector<struct PhysicalSensorsData> Parser::getMeasurementData( int virtualSensorsCount, 
-    vector<string> sensorNames, vector<struct SensorRawData> rawData, string ownTime )
+vector<struct PhysicalSensorsData> Parser::getMeasurementData( vector<string> sensorNames,
+        vector<struct SensorRawData> rawData, string ownTime )
 {
     int physSensorsCount = sensorNames.size();
 
@@ -186,45 +185,46 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( int virtualSensor
     // for every physical sensor parse rawDataString
     for( int sens = 0; sens < physSensorsCount; ++sens )
     {
-        // sensornamen
+        // sensornamen, timestamp
         sensordata[sens].sensorname = sensorNames[sens];
-
-        // timestamp
         sensordata[sens].owntime = ownTime;
 
         // accumulate data of all virtual sensors with equal name
-        for( int n = 0; n < virtualSensorsCount; ++n )
+        for( auto & iter: rawData )
         {
-            if( rawData[n].interesting != 0 )   // only interesting sensors (with a battery)
+            if( iter.interesting != 0 )   // process only interesting sensors (with a battery)
             {
-                if( sensordata[sens].sensorname == rawData[n].name )
+                if( sensordata[sens].sensorname == iter.name )
                 {
                     // batterycharge: write only once for every physical sensor
                     if( sensordata[sens].batterycharge == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 4 );    // battery
-                        string b = getBatteryCharge( rawData[n].config, regcomp ); 
+                        string b = getBatteryCharge( iter.config, regcomp ); 
                         if( b != string() ) sensordata[sens].batterycharge = b;
                     }
+
                     // humidity: write only once for every physical sensor
                     if( sensordata[sens].humidity == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 5 );    // humidity
-                        string r = getMeasuredValue( rawData[n].state, regcomp );
+                        string r = getMeasuredValue( iter.state, regcomp );
                         if( r != string() ) sensordata[sens].humidity = r;
                     }
+
                     // pressure: write only once for every physical sensor
                     if( sensordata[sens].pressure == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 6 );    // pressure
-                        string p = getMeasuredValue( rawData[n].state, regcomp );
+                        string p = getMeasuredValue( iter.state, regcomp );
                         if( p != string() ) sensordata[sens].pressure = p;
                     }
+
                     // temperature: write only once for every physical sensor
                     if( sensordata[sens].temperature == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 7 );    // temperature
-                        string t = getMeasuredValue( rawData[n].state, regcomp );
+                        string t = getMeasuredValue( iter.state, regcomp );
                         if( t != string() ) sensordata[sens].temperature = t;
                     }
 
@@ -232,7 +232,7 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( int virtualSensor
                     if( sensordata[sens].sensordate == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 8 );    // lastupdated
-                        string lastupdated = getLastUpdated( rawData[n].state, regcomp );
+                        string lastupdated = getLastUpdated( iter.state, regcomp );
                         if( lastupdated == string() ) string();
                         
                         regcomp = regexp->getCompiledRegexp( 9 );    // date
@@ -247,6 +247,7 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( int virtualSensor
                 }
             }
         }
+
         sensordata[sens].state = SENSOR_OK;   // set valid
   }
 
