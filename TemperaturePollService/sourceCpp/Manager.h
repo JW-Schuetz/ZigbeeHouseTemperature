@@ -3,7 +3,6 @@
 #include <vector>
 #include "Curl.h"
 #include "Credentials.h"
-#include "Parser.h"
 #include "Sensor.h"
 
 

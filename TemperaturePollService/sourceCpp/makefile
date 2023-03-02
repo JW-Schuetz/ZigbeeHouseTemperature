@@ -13,7 +13,7 @@ $(BIN): $(OBJ)
 			${CC} ${CFLAGS} -c $<
 
 ZigbeeSensors.o: Manager.h
-Manager.o: Manager.h Credentials.h Parser.h Sensor.h
+Manager.o: Manager.h Credentials.h Sensor.h
 Parser.o: Parser.h Regexp.h
 Regexp.o: Regexp.h Manager.h
 Sensor.o: Sensor.h Parser.h
