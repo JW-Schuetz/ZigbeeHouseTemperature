@@ -108,31 +108,15 @@ int Parser::isInterestingSensor( string config )
 }
 
 
-vector<string> Parser::sensorsNames( vector<struct SensorRawData>sdata, int *sensorsNamesCount )
+list<string> Parser::sensorsNames( vector<struct SensorRawData>sdata )
 {
-    *sensorsNamesCount = 0; // normalize counter
-
-    vector<string> sensorsNames;
+    list<string> sensorsNames = {};   // declare an empty list
 
     for( auto & iter: sdata )
-    {
-        // name
-        if( iter.interesting != 0 )   // only interesting sensors (with a battery)
-        {
-            string nameVirtSensor = iter.name;
+        if( iter.interesting != 0 )   // process only interesting sensors (with a battery)
+          sensorsNames.push_back( iter.name );
 
-            // nameVirtSensor yet contained in sensorsNames?
-            int hit = 0;
-            for( int n = 0; n < *sensorsNamesCount; ++n )
-                if( sensorsNames[n] == nameVirtSensor ) ++hit;
-
-            if( hit == 0 )
-            {
-                ++(*sensorsNamesCount);     // new sensor name: count it
-                sensorsNames.push_back( nameVirtSensor );
-            }
-        }
-    }
+    sensorsNames.unique();  // make sensorsNames unique
 
     return sensorsNames;
 }
@@ -175,7 +159,7 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
 }
 
 
-vector<struct PhysicalSensorsData> Parser::getMeasurementData( vector<string> sensorNames,
+vector<struct PhysicalSensorsData> Parser::getMeasurementData( list<string> sensorNames,
         vector<struct SensorRawData> rawData, string ownTime )
 {
     int physSensorsCount = sensorNames.size();
@@ -183,10 +167,11 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( vector<string> se
     vector<struct PhysicalSensorsData> sensordata(physSensorsCount);
 
     // for every physical sensor parse rawDataString
-    for( int sens = 0; sens < physSensorsCount; ++sens )
+    auto i = sensorNames.begin();
+    for( int sens = 0; sens < physSensorsCount; ++sens, ++i )
     {
-        // sensornamen, timestamp
-        sensordata[sens].sensorname = sensorNames[sens];
+        // sensorname, timestamp
+        sensordata[sens].sensorname = *i;
         sensordata[sens].owntime = ownTime;
 
         // accumulate data of all virtual sensors with equal name
@@ -257,8 +242,6 @@ vector<struct PhysicalSensorsData> Parser::getMeasurementData( vector<string> se
 
 string Parser::getBatteryCharge( string config, regex_t regcomp )
 {
-  regmatch_t pmatch[1];
-
   int ret = regexec( &regcomp, config.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
   if( ret == 0 )  // battery should be always there (sensor is interesting) but anyway
   {
@@ -284,8 +267,6 @@ string Parser::getBatteryCharge( string config, regex_t regcomp )
 
 string Parser::getMeasuredValue( string state, regex_t regcomp )
 {
-  regmatch_t pmatch[1];
-
   int ret = regexec( &regcomp, state.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
   if( ret == 0 )
   {
@@ -307,8 +288,6 @@ string Parser::getMeasuredValue( string state, regex_t regcomp )
 
 string Parser::getLastUpdated( string state, regex_t regcomp )
 {
-  regmatch_t pmatch[1];
-
   int ret = regexec( &regcomp, state.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
   if( ret == 0 )
   {
@@ -322,8 +301,6 @@ string Parser::getLastUpdated( string state, regex_t regcomp )
 
 string Parser::getDateTime( string dt, regex_t regcomp )
 {
-  regmatch_t pmatch[1];
-
   int ret = regexec( &regcomp, dt.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
   if( ret == 0 )
   {

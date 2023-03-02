@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <list>
 #include <string>
 #include <vector>
 #include "Regexp.h"
@@ -52,9 +53,9 @@ public:
     Parser();
     ~Parser();
 
-    vector<struct PhysicalSensorsData> getMeasurementData( vector<string>,
+    vector<struct PhysicalSensorsData> getMeasurementData( list<string>,
         vector<struct SensorRawData>, string );
-    vector<string> sensorsNames( vector<struct SensorRawData>, int * );
+    list<string> sensorsNames( vector<struct SensorRawData> );
     vector<struct SensorRawData> getSensorsRawDataStrings( string );
     string getSensorName( string );
     string getSensorConfig( string );
@@ -71,5 +72,6 @@ private:
     string getDateTime( string dt, regex_t );
 
     // private data
-    Regexp *regexp;          // compiled regular expressions
+    Regexp *regexp;           // regular expressions: compiled form
+    regmatch_t pmatch[1];     // regular expressions: regexec() match-indices
 };

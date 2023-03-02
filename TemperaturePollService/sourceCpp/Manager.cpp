@@ -45,7 +45,7 @@ void Manager::construct_poll_handle()
     if( poll_handle == NULL ) throw( string { "Manager::construct_poll_handle" }  );
 
     // set parameters for reading from URL
-    poll_headers = NULL;
+    poll_headers = {};
 
     curl_easy_setopt( poll_handle, CURLOPT_URL, URL );
     curl_easy_setopt( poll_handle, CURLOPT_HTTPGET, 1L );
@@ -119,9 +119,10 @@ void Manager::generateFileNames()
 {
     // generate new filename, deconstruct old curl-handle and construct a new one
     fileName = string( FILENAME_PREFIX );
+
     string datetime = time2string( actTime );
     size_t ndx = datetime.find_first_of( ' ' );
-    fileName += string(  datetime.begin(), datetime.begin() + ndx );
+    fileName += string( datetime.begin(), datetime.begin() + ndx );
     fileName += string( FILENAME_POSTFIX );
 
     remoteFileName = string( DISKSTATION );
