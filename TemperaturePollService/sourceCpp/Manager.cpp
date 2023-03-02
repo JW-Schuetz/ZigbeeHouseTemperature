@@ -178,7 +178,6 @@ Manager::Manager()
   if( ret != CURLE_OK ) throw( string { "Manager::Manager" } );
 
   construct_poll_handle();
-  parser = new Parser();
   sensor = new Sensor();
 }
 
@@ -186,7 +185,6 @@ Manager::Manager()
 Manager::~Manager()
 {
   delete sensor;
-  delete parser;
   destruct_poll_handle();
 
   curl_global_cleanup();
