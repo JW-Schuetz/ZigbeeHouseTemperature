@@ -9,10 +9,11 @@ public:
     Sensor();
     ~Sensor();
 
-    static void parseSensorsData( string, string );     // parse rawDataString of all sensors
-    static void writeDataToFile( string );              // write sensor data into file
+    static void parseSensorsData( string );     // parse rawDataString of all sensors
+    static void writeDataToFile( string );      // write sensor data into file
 
    // public data
+    static string rawDataString;    // Zigbee's REST-API raw data string containing all sensors and
 
 private:
     // private functions
@@ -25,7 +26,6 @@ private:
     // private data
     static int sensorsOfInterestCount;                    // count of virtual sensors with battery
     static int virtualSensorsCount;                       // count of virtual sensors
-    static string rawDataString;                          // Zigbee's REST-API raw data string containing all sensors and
     static vector<struct SensorRawData> rawData;          // rawData for each virtual sensor
     static vector<struct PhysicalSensorsData> sensorData; // parsed data of all sensors
     static string timeStamp;                              // polling timeStamp

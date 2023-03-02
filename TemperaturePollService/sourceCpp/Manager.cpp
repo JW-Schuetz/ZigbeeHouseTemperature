@@ -210,10 +210,10 @@ void Manager::executionloop()
     string timeStamp = manageTime();
 
     // read Zigbee gateways REST-API to get the rawdata string containing all sensors
-    string rawDataString = getRawDataString();
+    sensor->rawDataString = getRawDataString();
 
     // parse this rawdata string
-    sensor->parseSensorsData( rawDataString, timeStamp );
+    sensor->parseSensorsData( timeStamp );
 
     // write parsed sensor data into file
     sensor->writeDataToFile( fileName );

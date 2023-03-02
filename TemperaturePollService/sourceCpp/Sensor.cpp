@@ -24,9 +24,8 @@ Sensor::~Sensor()
 }
 
 
-void Sensor::parseSensorsData( string raw, string time )
+void Sensor::parseSensorsData( string time )
 {
-    rawDataString = raw;
     timeStamp = time;
 
     // argument: Zigbee's REST-API raw data string
