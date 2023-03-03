@@ -96,7 +96,7 @@ string Parser::getSensorInternalData( string internal, regex_t regcomp )
 }
 
 
-int Parser::isInterestingSensor( string config )
+bool Parser::isInterestingSensor( string config )
 {
     regex_t regcomp = regexp->getCompiledRegexp( 4 ); // regex for battery
 
@@ -160,80 +160,79 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
 
 
 vector<struct PhysicalSensorsData> Parser::getMeasurementData( list<string> sensorNames,
-        vector<struct SensorRawData> rawData, string ownTime )
+        vector<struct SensorRawData> rawData, string timeStamp )
 {
     int physSensorsCount = sensorNames.size();
 
-    vector<struct PhysicalSensorsData> sensordata(physSensorsCount);
+    vector<struct PhysicalSensorsData> sensordata(physSensorsCount);  // declare vector of length physSensorsCount
 
     // for every physical sensor parse rawDataString
-    auto i = sensorNames.begin();
-    for( int sens = 0; sens < physSensorsCount; ++sens, ++i )
+    auto iterName = sensorNames.begin();
+    for( auto & iterData: sensordata )
     {
         // sensorname, timestamp
-        sensordata[sens].sensorname = *i;
-        sensordata[sens].owntime = ownTime;
+        iterData.sensorname = *(iterName++);
+        iterData.owntime = timeStamp;
 
         // accumulate data of all virtual sensors with equal name
-        for( auto & iter: rawData )
+        for( auto & iterRawData: rawData )
         {
-            if( iter.interesting != 0 )   // process only interesting sensors (with a battery)
+            if( iterRawData.interesting != 0 )   // process only interesting sensors (with a battery)
             {
-                if( sensordata[sens].sensorname == iter.name )
+                if( iterData.sensorname == iterRawData.name )
                 {
                     // batterycharge: write only once for every physical sensor
-                    if( sensordata[sens].batterycharge == string() )
+                    if( iterData.batterycharge == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 4 );    // battery
-                        string b = getBatteryCharge( iter.config, regcomp ); 
-                        if( b != string() ) sensordata[sens].batterycharge = b;
+                        string b = getBatteryCharge( iterRawData.config, regcomp ); 
+                        if( b != string() ) iterData.batterycharge = b;
                     }
 
                     // humidity: write only once for every physical sensor
-                    if( sensordata[sens].humidity == string() )
+                    if( iterData.humidity == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 5 );    // humidity
-                        string r = getMeasuredValue( iter.state, regcomp );
-                        if( r != string() ) sensordata[sens].humidity = r;
+                        string r = getMeasuredValue( iterRawData.state, regcomp );
+                        if( r != string() ) iterData.humidity = r;
                     }
 
                     // pressure: write only once for every physical sensor
-                    if( sensordata[sens].pressure == string() )
+                    if( iterData.pressure == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 6 );    // pressure
-                        string p = getMeasuredValue( iter.state, regcomp );
-                        if( p != string() ) sensordata[sens].pressure = p;
+                        string p = getMeasuredValue( iterRawData.state, regcomp );
+                        if( p != string() ) iterData.pressure = p;
                     }
 
                     // temperature: write only once for every physical sensor
-                    if( sensordata[sens].temperature == string() )
+                    if( iterData.temperature == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 7 );    // temperature
-                        string t = getMeasuredValue( iter.state, regcomp );
-                        if( t != string() ) sensordata[sens].temperature = t;
+                        string t = getMeasuredValue( iterRawData.state, regcomp );
+                        if( t != string() ) iterData.temperature = t;
                     }
 
                     // sensordate, sensortime: write only once for every physical sensor
-                    if( sensordata[sens].sensordate == string() )
+                    if( iterData.sensordate == string() )
                     {
                         auto regcomp = regexp->getCompiledRegexp( 8 );    // lastupdated
-                        string lastupdated = getLastUpdated( iter.state, regcomp );
+                        string lastupdated = getLastUpdated( iterRawData.state, regcomp );
                         if( lastupdated == string() ) string();
                         
                         regcomp = regexp->getCompiledRegexp( 9 );    // date
                         string d = getDateTime( lastupdated, regcomp );
-                        if( d != string() )
-                         sensordata[sens].sensordate = d;
+                        if( d != string() ) iterData.sensordate = d;
 
                         regcomp = regexp->getCompiledRegexp( 10 );    // time
                         string t = getDateTime( lastupdated, regcomp );
-                        if( t != string() ) sensordata[sens].sensortime = t;
+                        if( t != string() ) iterData.sensortime = t;
                     }
                 }
             }
         }
 
-        sensordata[sens].state = SENSOR_OK;   // set valid
+        iterData.state = SENSOR_OK;   // set valid
   }
 
   return sensordata;

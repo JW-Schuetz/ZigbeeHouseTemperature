@@ -24,8 +24,6 @@ private:
     // they will be ignored.
 
     // private data
-    static int sensorsOfInterestCount;                    // count of virtual sensors with battery
-    static int virtualSensorsCount;                       // count of virtual sensors
     static vector<struct SensorRawData> rawData;          // rawData for each virtual sensor
     static vector<struct PhysicalSensorsData> sensorData; // parsed data of all sensors
     static string timeStamp;                              // polling timeStamp

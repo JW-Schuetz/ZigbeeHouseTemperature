@@ -3,9 +3,7 @@
 
 
 // initialized storage for static data-members
-int Sensor::sensorsOfInterestCount {};  // count of sensors with battery
-int Sensor::virtualSensorsCount {};     // count of virtual sensors
-string Sensor::rawDataString;           // Zigbee's REST-API raw data string containing all sensors
+string Sensor::rawDataString; // Zigbee's REST-API raw data string containing all sensors
 vector<struct SensorRawData> Sensor::rawData {};          // rawData for each virtual sensor
 vector<struct PhysicalSensorsData> Sensor::sensorData {}; // parsed data of all sensors
 string Sensor::timeStamp {};                              // timeStamp
@@ -44,7 +42,7 @@ void Sensor::parseSensorsData( string time )
     }
 
     // count interesting sensors (those with a battery)
-    sensorsOfInterestCount = 0;
+    int sensorsOfInterestCount = 0;
     for( auto & iter: rawData )
       if( iter.interesting )
         ++sensorsOfInterestCount;
@@ -73,37 +71,37 @@ void Sensor::writeDataToFile( string fileName )
   fprintf( file, "%s", timeStamp.c_str() );
   fprintf( file, ", " );
 
-  string str;
-  for( size_t i = 0; i < sensorData.size(); ++i )
+  auto end = sensorData.end();
+  for( auto iter = sensorData.begin(); iter != end; ++iter )
   {
-    str = sensorData[i].sensorname;
+    string str = iter->sensorname;
     fprintf( file, "%s", str.c_str() );
     fprintf( file, ", " );
 
-    str = sensorData[i].batterycharge;
+    str = iter->batterycharge;
     fprintf( file, "%s", str.c_str() );
     fprintf( file, ", " );
 
-    str = sensorData[i].humidity;
+    str = iter->humidity;
     fprintf( file, "%s", str.c_str() );
     fprintf( file, ", " );
 
-    str = sensorData[i].pressure;
+    str = iter->pressure;
     fprintf( file, "%s", str.c_str() );
     fprintf( file, ", " );
 
-    str = sensorData[i].temperature;
+    str = iter->temperature;
     fprintf( file, "%s", str.c_str() );
     fprintf( file, ", " );
 
-    str = sensorData[i].sensordate;
+    str = iter->sensordate;
     fprintf( file, "%s", str.c_str() );
     fprintf( file, ", " );
 
-    str = sensorData[i].sensortime;
+    str = iter->sensortime;
     fprintf( file, "%s", str.c_str() );
 
-    if( i != sensorData.size() - 1 ) fprintf( file, ", " );
+    if( iter != end - 1 ) fprintf( file, ", " );
   }
 
   fprintf( file, "\n" );

@@ -25,7 +25,7 @@ typedef enum
 
 struct SensorRawData
 {
-  int interesting;    // interesting sensor with battery 
+  bool interesting;   // interesting sensor (with battery) 
   string allData;     // all sensor data
   string name;        // contained sensor name
   string config;      // contained config data
@@ -60,7 +60,7 @@ public:
     string getSensorName( string );
     string getSensorConfig( string );
     string getSensorState( string );
-    int isInterestingSensor( string );
+    bool isInterestingSensor( string );
 
 private:
     // private functions
@@ -73,5 +73,5 @@ private:
 
     // private data
     Regexp *regexp;           // regular expressions: compiled form
-    regmatch_t pmatch[1];     // regular expressions: regexec() match-indices
+    regmatch_t pmatch[1];     // regular expressions: regexec() match indices
 };
