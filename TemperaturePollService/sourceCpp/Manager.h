@@ -60,7 +60,7 @@ private:
     static struct tm oldTime;                               // previous time stamp
     static struct tm actTime;                               // actual time stamp
     static duration<int,ratio<1,1>> sleep_time;             // sleeping time
-    static string fileName;                                 // actual local filename
+    static string localFileName;                            // actual local filename
     static string remoteFileName;                           // actual remote filename
     static struct WriteMemoryStruct content;                // storage for curl writefunction
     static struct curl_slist *poll_headers;                 // headers list of easy_handle poll_handle

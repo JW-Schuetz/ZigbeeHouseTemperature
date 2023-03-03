@@ -12,7 +12,7 @@ CURLM *Manager::poll_handle {};
 CURLM *Manager::sendfile_handle {};
 struct tm Manager::oldTime {};
 struct tm Manager::actTime {};
-string Manager::fileName {};
+string Manager::localFileName {};
 string Manager::remoteFileName {};
 FILE *Manager::fileToSend {};
 Parser *Manager::parser {};
@@ -118,15 +118,15 @@ string Manager::manageTime()  // return actual timestamp and provide actual file
 void Manager::generateFileNames()
 {
     // generate new filename, deconstruct old curl-handle and construct a new one
-    fileName = string( FILENAME_PREFIX );
+    localFileName = string( FILENAME_PREFIX );
 
     string datetime = time2string( actTime );
     size_t ndx = datetime.find_first_of( ' ' );
-    fileName += string( datetime.begin(), datetime.begin() + ndx );
-    fileName += string( FILENAME_POSTFIX );
+    localFileName += string( datetime.begin(), datetime.begin() + ndx );
+    localFileName += string( FILENAME_POSTFIX );
 
     remoteFileName = string( DISKSTATION );
-    remoteFileName += fileName;
+    remoteFileName += localFileName;
 }
 
 
@@ -135,7 +135,7 @@ void Manager::construct_sendfile_handle()
     sendfile_handle = curl_easy_init();
     if( sendfile_handle == NULL ) throw( string { "Manager::construct_sendfile_handle curl_easy_init" }  );
 
-    fileToSend = fopen( fileName.c_str(), "r" );
+    fileToSend = fopen( localFileName.c_str(), "r" );
     if( fileToSend == NULL ) throw( string { "Manager::construct_sendfile_handle fopen" }  );
 
     // set curls parameters for filetransfer to NAS
@@ -207,14 +207,15 @@ void Manager::executionloop()
     // get actual timestamp and provide actual filename for file transfer to NAS
     string timeStamp = manageTime();
 
-    // read Zigbee gateways REST-API to get the rawdata string containing all sensors
+    // read Zigbee gateways REST-API to get the rawdata string containing data
+    // of all sensors
     sensor->rawDataString = getRawDataString();
 
     // parse this rawdata string
     sensor->parseSensorsData( timeStamp );
 
     // write parsed sensor data into file
-    sensor->writeDataToFile( fileName );
+    sensor->writeDataToFile( localFileName );
 
     // FTP-transfer this file to NAS
     transferDataFile();

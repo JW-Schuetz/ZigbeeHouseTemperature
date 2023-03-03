@@ -72,6 +72,6 @@ private:
     string getDateTime( string dt, regex_t );
 
     // private data
-    Regexp *regexp;           // regular expressions: compiled form
-    regmatch_t pmatch[1];     // regular expressions: regexec() match indices
+    Regexp *regexp;           // regular expressions, provide compiled form
+    regmatch_t pmatch[1];     // regular expressions, regexec() match indices
 };

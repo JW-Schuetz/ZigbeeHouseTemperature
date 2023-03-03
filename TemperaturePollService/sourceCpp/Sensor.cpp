@@ -32,7 +32,7 @@ void Sensor::parseSensorsData( string time )
 
     // parse individual rawdata string for each sensor for getting
     // sensors name, config- and state-strings and test whether 
-    // it is interesting for us (has an battery)
+    // it is interesting for us (that is, it contains a battery)
     for( auto & iter: rawData )
     {
       iter.name = parser->getSensorName( string( iter.allData ) );
@@ -55,7 +55,8 @@ void Sensor::parseSensorsData( string time )
     // determine physical sensors names (the names must be unique)
     auto sensorNames = parser->sensorsNames( rawData );
 
-    // plausibility-check: count of physical sensors must be count of interesting sensors div. by 3
+    // plausibility-check: count of physical sensors must be count of interesting
+    // sensors divided by 3
     if( (int)sensorNames.size() != sensorsOfInterestCount / 3 )
         throw( string { "Sensor::parseSensorsData physicalSensorsCount" }  );
 

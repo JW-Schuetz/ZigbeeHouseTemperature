@@ -45,7 +45,6 @@ string Parser::getSensorName( string config )
     regex_t regcomp1 = regexp->getCompiledRegexp( 1 );  // sensor name
     regex_t regcomp2 = regexp->getCompiledRegexp( 12 ); // specification of allowed sensornames
 
-    regmatch_t pmatch[1];
     int ret = regexec( &regcomp1, config.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
     if( ret != 0 ) return string();         // no name available
 
@@ -80,7 +79,6 @@ string Parser::getSensorState( string internal )
 
 string Parser::getSensorInternalData( string internal, regex_t regcomp )
 {
-    regmatch_t pmatch[1];
     int ret = regexec( &regcomp, internal.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
     if( ret != 0 ) return string();
 
@@ -100,7 +98,6 @@ bool Parser::isInterestingSensor( string config )
 {
     regex_t regcomp = regexp->getCompiledRegexp( 4 ); // regex for battery
 
-    regmatch_t pmatch[1];
     int ret = regexec( &regcomp, config.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
 
     if( ret == 0 ) return 1;  // sensor with battery
@@ -124,7 +121,6 @@ list<string> Parser::sensorsNames( vector<struct SensorRawData>sdata )
 
 vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
 {
-    regmatch_t pmatch[1];
     regex_t regcomp = regexp->getCompiledRegexp( 0 ); // regex for sensor rawdata string
 
     string toBeMatchedNext = rawData;
