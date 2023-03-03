@@ -39,7 +39,7 @@ void Regexp::printResults( string str, int ret, regex_t regex )
 
 regex_t Regexp::getCompiledRegexp( int ndx )
 {
-  if( ( ndx < 0 ) || ( ndx >= N ) ) throw( string { "Regexp::getCompiledRegexp" }  );
+  if( ( ndx < 0 ) || ( ndx >= N ) ) throw( string { "Regexp::getCompiledRegexp" } );
 
   return regex_compiled[ndx];
 }

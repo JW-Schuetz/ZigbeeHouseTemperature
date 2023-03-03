@@ -174,6 +174,502 @@ noch zu tun
 \end_layout
 
 \begin_layout Subsection*
+Datenstruktur Sensorrohdaten
+\end_layout
+
+\begin_layout Subsubsection*
+Daylight-Sensor
+\end_layout
+
+\begin_layout Standard
+
+\color cyan
+
+\backslash
+"config
+\backslash
+": {
+\backslash
+"configured
+\backslash
+":true,
+\backslash
+"on
+\backslash
+":true,
+\backslash
+"sunriseoffset
+\backslash
+":30,
+\backslash
+"sunsetoffset
+\backslash
+":-30},
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"etag
+\backslash
+":
+\backslash
+"c7fb6e9ca518c61278a88b15ef958734
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"Philips
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"modelid
+\backslash
+":
+\backslash
+"PHDL00
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"name
+\backslash
+":
+\backslash
+"Daylight
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\color cyan
+
+\backslash
+"state
+\backslash
+":{
+\backslash
+"dark
+\backslash
+":true,
+\backslash
+"daylight
+\backslash
+":false,
+\backslash
+"lastupdated
+\backslash
+":
+\backslash
+"2023-03-03T18:56:23.860
+\backslash
+",
+\backslash
+"status
+\backslash
+":230,
+\backslash
+"sunrise
+\backslash
+":
+\backslash
+"2023-03-03T06:05:24
+\backslash
+",
+\backslash
+"sunset
+\backslash
+":
+\backslash
+"2023-03-03T17:09:35
+\backslash
+"},
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"swversion
+\backslash
+":
+\backslash
+"1.0
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"type
+\backslash
+":
+\backslash
+"Daylight
+\backslash
+", 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"uniqueid
+\backslash
+":
+\backslash
+"00:21:2e:ff:ff:09:8d:cd-01
+\backslash
+"
+\end_layout
+
+\begin_layout Subsubsection*
+Weather-Sensor Beispiel 1
+\end_layout
+
+\begin_layout Standard
+
+\color cyan
+
+\backslash
+"config
+\backslash
+":{
+\backslash
+"battery
+\backslash
+":82,
+\backslash
+"offset
+\backslash
+":0,
+\backslash
+"on
+\backslash
+":true,
+\backslash
+"reachable
+\backslash
+":true}, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"ep
+\backslash
+":1, 
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"etag
+\backslash
+":
+\backslash
+"ba099b1a79c1a3ae57b873a1cd11284f
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"lastannounced
+\backslash
+":
+\backslash
+"2023-02-21T20:07:41Z
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"lastseen
+\backslash
+":
+\backslash
+"2023-03-03T20:52Z
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"LUMI
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"modelid
+\backslash
+":
+\backslash
+"lumi.weather
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"name
+\backslash
+":
+\backslash
+"Sensor-2
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\color cyan
+
+\backslash
+"state
+\backslash
+":{
+\backslash
+"humidity
+\backslash
+":7832,
+\backslash
+"lastupdated
+\backslash
+":
+\backslash
+"2023-03-03T20:35:23.827
+\backslash
+"},
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"swversion
+\backslash
+":
+\backslash
+"20191205
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"type
+\backslash
+":
+\backslash
+"ZHAHumidity
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"uniqueid
+\backslash
+":
+\backslash
+"00:15:8d:00:08:c1:19:af-01-0405
+\backslash
+"
+\end_layout
+
+\begin_layout Subsubsection*
+Weather-Sensor Beispiel 2
+\end_layout
+
+\begin_layout Standard
+
+\color cyan
+
+\backslash
+"config
+\backslash
+":{
+\backslash
+"battery
+\backslash
+":85,
+\backslash
+"offset
+\backslash
+":0,
+\backslash
+"on
+\backslash
+":true,
+\backslash
+"reachable
+\backslash
+":true},
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"ep
+\backslash
+":1,
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"etag
+\backslash
+":
+\backslash
+"0da2afcf5ed1f0f2e968017ac8afc79c
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"lastannounced
+\backslash
+":null,
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"lastseen
+\backslash
+":
+\backslash
+"2023-03-03T20:56Z
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"manufacturername
+\backslash
+":
+\backslash
+"LUMI
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"modelid
+\backslash
+":
+\backslash
+"lumi.weather
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"name
+\backslash
+":
+\backslash
+"Sensor-1
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\color cyan
+
+\backslash
+"state
+\backslash
+":{
+\backslash
+"lastupdated
+\backslash
+":
+\backslash
+"2023-03-03T20:32:15.533
+\backslash
+",
+\backslash
+"pressure
+\backslash
+":1004},
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"swversion
+\backslash
+":
+\backslash
+"20191205
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"type
+\backslash
+":
+\backslash
+"ZHAPressure
+\backslash
+",
+\end_layout
+
+\begin_layout Standard
+
+\backslash
+"uniqueid
+\backslash
+":
+\backslash
+"00:15:8d:00:08:97:85:47-01-0403
+\backslash
+"
+\end_layout
+
+\begin_layout Subsection*
 Anhang
 \end_layout
 

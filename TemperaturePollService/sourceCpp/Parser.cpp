@@ -86,7 +86,7 @@ string Parser::getSensorInternalData( string internal, regex_t regcomp )
 
     string s = internal.substr( endNdx, internal.length() - endNdx );
     const char *p = findMatchingCurlyBrace( s.c_str() );
-    if( p == NULL ) throw( string { "Parser::getSensorInternalData" }  );
+    if( p == NULL ) throw( string { "Parser::getSensorInternalData" } );
 
     string match = s.substr( 0, p - s.c_str() );
 
@@ -121,7 +121,11 @@ list<string> Parser::sensorsNames( vector<struct SensorRawData>sdata )
 
 vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
 {
-    regex_t regcomp = regexp->getCompiledRegexp( 0 ); // regex for sensor rawdata string
+  // Reads for every Zigbee sensor its raw data string without leading "{" and terminating "}"
+  // and stores it in element "allData" of "structure SensorRawData".
+  // Create for every found sensor a new vector element.
+
+    regex_t regcomp = regexp->getCompiledRegexp( 0 ); // regex for sensors "start sequence"
 
     string toBeMatchedNext = rawData;
     vector<struct SensorRawData> sensorRawDataVector = {};
@@ -131,24 +135,24 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
         int ret = regexec( &regcomp, toBeMatchedNext.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
         if( ret != 0 ) break;   // no further sonsor found: leave loop
 
-        int endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match
+        // sensor found: index to first unmatched char after end of match, that is "{"
+        int endNdx = pmatch[0].rm_eo;
 
         string s = toBeMatchedNext.substr( endNdx, toBeMatchedNext.length() - endNdx );
-        const char *p = findMatchingCurlyBrace( s.c_str() );
-        if( p == NULL ) throw( string { "Parser::getSensorsRawDataStrings" }  );
+        const char *p = findMatchingCurlyBrace( s.c_str() );  // find end if sensors raw data string
+        if( p == NULL ) throw( string { "Parser::getSensorsRawDataStrings" } );
 
         int len = p - s.c_str();
- 
-        string match = s.substr( 0, len + 1 );
+        string match = s.substr( 0, len + 1 );  // sensors raw data string including leading "{" and terminating "}"
 
-        // initialize structure, remove leading "{" and terminating "}"
+        // initialize structure, remove leading "{" and terminating "}" from raw data string
         struct SensorRawData sensorRawData = {};
         sensorRawData.allData = string( match.begin() + 1, match.end() - 1 );
 
         sensorRawDataVector.push_back( sensorRawData );
 
-        // calculate next match pointer
-        toBeMatchedNext = string( p + 1, p + ( s.length() - len ) );
+        // calculate next match pointer, that is the "start sequence" of next sensor, if any
+        toBeMatchedNext = string( p + 2, p + ( s.length() - len ) );
     }
 
     return sensorRawDataVector;

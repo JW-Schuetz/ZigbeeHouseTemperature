@@ -4,7 +4,7 @@ CFLAGS = -Wall -g -ggdb -std=c++20
 LNK = -lc -lcurl -lpthread
 
 BIN = zigbeesensors
-OBJ = ZigbeeSensors.o Manager.o Sensor.o Regexp.o Parser.o
+OBJ = ZigbeeSensors.o Manager.o Parser.o Regexp.o Sensor.o
 
 $(BIN): $(OBJ)
 	$(CC) $(CFLAGS) -o $(BIN) $(OBJ) $(LNK)

@@ -1,4 +1,6 @@
 
+#pragma once
+
 #include <chrono>
 #include <vector>
 #include "Curl.h"
@@ -42,7 +44,6 @@ public:
     static void executionloop();        // execution-loop
 
 private:
-    // private functions
     static void generateFileNames();    // generate local and remote filename
     static string manageTime();         // return actual timestamp and provide actual filename for file transfer to NAS
     static void transferDataFile();     // FTP-tansfer file to NAS
@@ -55,7 +56,6 @@ private:
     static void setTime( struct tm * );                         // get time stamp from operation system
     static string time2string( struct tm );                     // convert time to string
 
-    // private data
     static FILE *fileToSend;                                // file handle of FTP-sent file to NAS
     static struct tm oldTime;                               // previous time stamp
     static struct tm actTime;                               // actual time stamp

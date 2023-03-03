@@ -50,7 +50,7 @@ void Sensor::parseSensorsData( string time )
     // every interesting sensor must consist of 3 "physical" sensors
     // for measuring temperature, pressure and humidity
     if( sensorsOfInterestCount % 3 != 0 )
-        throw( string { "Sensor::parseSensorsData sensorsOfInterestCount" }  );
+        throw( string { "Sensor::parseSensorsData sensorsOfInterestCount" } );
 
     // determine physical sensors names (the names must be unique)
     auto sensorNames = parser->sensorsNames( rawData );
@@ -58,7 +58,7 @@ void Sensor::parseSensorsData( string time )
     // plausibility-check: count of physical sensors must be count of interesting
     // sensors divided by 3
     if( (int)sensorNames.size() != sensorsOfInterestCount / 3 )
-        throw( string { "Sensor::parseSensorsData physicalSensorsCount" }  );
+        throw( string { "Sensor::parseSensorsData physicalSensorsCount" } );
 
     sensorData = parser->getMeasurementData( sensorNames, rawData, timeStamp );
 }
@@ -67,7 +67,7 @@ void Sensor::parseSensorsData( string time )
 void Sensor::writeDataToFile( string fileName )
 {
   FILE *file = fopen( fileName.c_str(), "a" );
-  if( file == NULL ) throw( string { "Sensor::writeDataToFile fopen" }  );
+  if( file == NULL ) throw( string { "Sensor::writeDataToFile fopen" } );
 
   fprintf( file, "%s", timeStamp.c_str() );
   fprintf( file, ", " );
@@ -108,5 +108,5 @@ void Sensor::writeDataToFile( string fileName )
   fprintf( file, "\n" );
 
   int ret = fclose( file );
-  if( ret != 0 ) throw( string { "Sensor::writeDataToFile fclose" }  );
+  if( ret != 0 ) throw( string { "Sensor::writeDataToFile fclose" } );
 }

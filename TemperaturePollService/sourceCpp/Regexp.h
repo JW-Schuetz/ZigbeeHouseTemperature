@@ -13,7 +13,7 @@ class Regexp
 
     string regexp[N] =  // regexp's to be translated
     {
-        "\"[0-9]{1,2}\":",                      //  0
+        "\"[0-9]{1,2}\":",                      //  0       "start sequence" of each sensor
         "\"name\":",                            //  1
         "\"config\":",                          //  2
         "\"state\":",                           //  3

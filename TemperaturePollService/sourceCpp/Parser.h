@@ -49,7 +49,6 @@ struct PhysicalSensorsData
 class Parser
 {
 public:
-    // public functions
     Parser();
     ~Parser();
 
@@ -63,7 +62,6 @@ public:
     bool isInterestingSensor( string );
 
 private:
-    // private functions
     const char *findMatchingCurlyBrace( const char * );
     string getSensorInternalData( string, regex_t );
     string getBatteryCharge( string config, regex_t );
@@ -71,7 +69,6 @@ private:
     string getLastUpdated( string state, regex_t );
     string getDateTime( string dt, regex_t );
 
-    // private data
     Regexp *regexp;           // regular expressions, provide compiled form
     regmatch_t pmatch[1];     // regular expressions, regexec() match indices
 };
