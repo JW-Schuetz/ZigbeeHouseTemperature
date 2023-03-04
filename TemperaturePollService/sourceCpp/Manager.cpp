@@ -15,7 +15,6 @@ struct tm Manager::actTime {};
 string Manager::localFileName {};
 string Manager::remoteFileName {};
 FILE *Manager::fileToSend {};
-Parser *Manager::parser {};
 Sensor *Manager::sensor {};
 
 

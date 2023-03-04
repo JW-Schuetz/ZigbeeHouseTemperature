@@ -8,7 +8,10 @@
 #include "Sensor.h"
 
 
-//#define DEBUG                               // debugging enabled
+using namespace std::chrono;
+
+
+//#define DEBUG                             // debugging enabled
 #ifdef  DEBUG
     #define TIMER_REPEAT_TIME     2         // polling repeat time [sec]
 #else
@@ -22,9 +25,6 @@
 #endif
 
 #define FILENAME_POSTFIX    ".csv"
-
-
-using namespace std::chrono;
 
 
 struct WriteMemoryStruct
@@ -66,6 +66,5 @@ private:
     static struct curl_slist *poll_headers;                 // headers list of easy_handle poll_handle
     static CURLM *poll_handle;                              // easy_handle for reading URL
     static CURLM *sendfile_handle;                          // easy_handle for sending file to NAS
-    static Parser *parser;                                  // object for parsing strings
     static Sensor *sensor;                                  // sensor object
 };

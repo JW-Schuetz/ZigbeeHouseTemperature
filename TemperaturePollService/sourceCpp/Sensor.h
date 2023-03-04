@@ -18,7 +18,7 @@ public:
 private:
     // A physical sensor consist of three virtual sensors measuring temperature, pressure and humidity.
     // There are maybe more virtual sensors known to the zigbee gateway, for instance a generic
-    // "daylight sensor". These sensors don't have a battery and are of no interest for us, 
+    // "daylight sensor". These sensors don't have a battery and are of no interest for me, 
     // they will be ignored.
 
     static vector<struct SensorRawData> rawData;          // rawData for each virtual sensor
