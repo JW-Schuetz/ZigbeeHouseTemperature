@@ -43,8 +43,9 @@ function [ t, tab1, tab2 ] = readTable( days )
     tab = tab( ndx, : );
 
     % nur die letzten "days" Tage auswerten
-    ndx = isbetween( t, t - days, t );
+    ndx = isbetween( t, t( end ) - days, t( end ) );
     tab = tab( ndx, : );
+    t   = t( ndx, : );
 
     % Datum und Zeitstempel der Sensoren zusammenfassen
     tab.Sensordatum1.Format = 'dd.MM.uuuu HH:mm';
