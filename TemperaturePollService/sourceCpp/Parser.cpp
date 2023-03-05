@@ -105,21 +105,7 @@ bool Parser::isInterestingSensor( string config )
 }
 
 
-list<string> Parser::sensorsNames( vector<struct SensorRawData>sdata )
-{
-    list<string> sensorsNames = {};   // declare an empty list
-
-    for( auto & iter: sdata )
-        if( iter.interesting != 0 )   // process only interesting sensors (with a battery)
-          sensorsNames.push_back( iter.name );
-
-    sensorsNames.unique();  // make sensorsNames unique
-
-    return sensorsNames;
-}
-
-
-vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
+vector<string> Parser::getSensorsRawDataStrings( string rawData )
 {
   // Reads for every Zigbee sensor its raw data string without leading "{" and terminating "}"
   // and stores it in element "allData" of "structure SensorRawData".
@@ -128,7 +114,7 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
     regex_t regcomp = regexp->getCompiledRegexp( 0 ); // regex for sensors "start sequence"
 
     string toBeMatchedNext = rawData;
-    vector<struct SensorRawData> sensorRawDataVector = {};
+    vector<string> sensorRawDataVector = {};
 
     while( true )   // loop until no further sonsor found
     {
@@ -145,11 +131,8 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
         int len = p - s.c_str();
         string match = s.substr( 0, len + 1 );  // sensors raw data string including leading "{" and terminating "}"
 
-        // initialize structure, remove leading "{" and terminating "}" from raw data string
-        struct SensorRawData sensorRawData = {};
-        sensorRawData.allData = string( match.begin() + 1, match.end() - 1 );
-
-        sensorRawDataVector.push_back( sensorRawData );
+        // remove leading "{" and terminating "}" from raw data string
+        sensorRawDataVector.push_back( string( match.begin() + 1, match.end() - 1 ) );
 
         // calculate next match pointer, that is the "start sequence" of next sensor, if any
         toBeMatchedNext = string( p + 2, p + ( s.length() - len ) );
@@ -159,83 +142,50 @@ vector<struct SensorRawData> Parser::getSensorsRawDataStrings( string rawData )
 }
 
 
-vector<struct PhysicalSensorsData> Parser::getMeasurementData( list<string> sensorNames,
-        vector<struct SensorRawData> rawData, string timeStamp )
+string Parser::getBatteryChargeString( string config )
 {
-    int physSensorsCount = sensorNames.size();
+    auto regcomp = regexp->getCompiledRegexp( 4 );    // regex for battery
+    return getBatteryCharge( config, regcomp ); 
+}
 
-    vector<struct PhysicalSensorsData> sensordata(physSensorsCount);  // declare vector of length physSensorsCount
 
-    // for every physical sensor parse rawDataString
-    auto iterName = sensorNames.begin();
-    for( auto & iterData: sensordata )
-    {
-        // sensorname, timestamp
-        iterData.sensorname = *(iterName++);
-        iterData.owntime = timeStamp;
+string Parser::getHumidityString( string state )
+{
+    auto regcomp = regexp->getCompiledRegexp( 5 );    // regex for humidity
+    return getMeasuredValue( state, regcomp ); 
+}
 
-        // accumulate data of all virtual sensors with equal name
-        for( auto & iterRawData: rawData )
-        {
-            if( iterRawData.interesting != 0 )   // process only interesting sensors (with a battery)
-            {
-                if( iterData.sensorname == iterRawData.name )
-                {
-                    // batterycharge: write only once for every physical sensor
-                    if( iterData.batterycharge == string() )
-                    {
-                        auto regcomp = regexp->getCompiledRegexp( 4 );    // battery
-                        string b = getBatteryCharge( iterRawData.config, regcomp ); 
-                        if( b != string() ) iterData.batterycharge = b;
-                    }
 
-                    // humidity: write only once for every physical sensor
-                    if( iterData.humidity == string() )
-                    {
-                        auto regcomp = regexp->getCompiledRegexp( 5 );    // humidity
-                        string r = getMeasuredValue( iterRawData.state, regcomp );
-                        if( r != string() ) iterData.humidity = r;
-                    }
+string Parser::getPressureString( string state )
+{
+    auto regcomp = regexp->getCompiledRegexp( 6 );    // regex for humidity
+    return getMeasuredValue( state, regcomp ); 
+}
 
-                    // pressure: write only once for every physical sensor
-                    if( iterData.pressure == string() )
-                    {
-                        auto regcomp = regexp->getCompiledRegexp( 6 );    // pressure
-                        string p = getMeasuredValue( iterRawData.state, regcomp );
-                        if( p != string() ) iterData.pressure = p;
-                    }
 
-                    // temperature: write only once for every physical sensor
-                    if( iterData.temperature == string() )
-                    {
-                        auto regcomp = regexp->getCompiledRegexp( 7 );    // temperature
-                        string t = getMeasuredValue( iterRawData.state, regcomp );
-                        if( t != string() ) iterData.temperature = t;
-                    }
+string Parser::getTemperatureString( string state )
+{
+    auto regcomp = regexp->getCompiledRegexp( 7 );    // regex for temperature
+    return getMeasuredValue( state, regcomp ); 
+}
 
-                    // sensordate, sensortime: write only once for every physical sensor
-                    if( iterData.sensordate == string() )
-                    {
-                        auto regcomp = regexp->getCompiledRegexp( 8 );    // lastupdated
-                        string lastupdated = getLastUpdated( iterRawData.state, regcomp );
-                        if( lastupdated == string() ) string();
-                        
-                        regcomp = regexp->getCompiledRegexp( 9 );    // date
-                        string d = getDateTime( lastupdated, regcomp );
-                        if( d != string() ) iterData.sensordate = d;
 
-                        regcomp = regexp->getCompiledRegexp( 10 );    // time
-                        string t = getDateTime( lastupdated, regcomp );
-                        if( t != string() ) iterData.sensortime = t;
-                    }
-                }
-            }
-        }
+vector<string> Parser::getDateTimeString( string state )
+{
+    vector<string> ret( 2 );  // create 2-tupel
 
-        iterData.state = SENSOR_OK;   // set valid
-  }
+    auto regcomp = regexp->getCompiledRegexp( 8 );  // regex for lastupdated
+    string lastupdated = getLastUpdated( state, regcomp );
 
-  return sensordata;
+    regcomp = regexp->getCompiledRegexp( 9 );       // regex for date
+    string d = getDateTime( lastupdated, regcomp );
+    if( d != string() ) ret[0] = d;
+
+    regcomp = regexp->getCompiledRegexp( 10 );      // regex for time
+    string t = getDateTime( lastupdated, regcomp );
+    if( t != string() ) ret[1] = t;
+
+    return ret;
 }
 
 

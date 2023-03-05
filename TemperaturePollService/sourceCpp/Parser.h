@@ -11,7 +11,8 @@
 
 typedef enum
 {
-  SENSOR_OK = 0,               // all OK
+  SENSOR_NOTOK = -1,           // not OK
+  SENSOR_OK,                   // all OK
   SENSOR_CURL,                 // curl with problems
   SENSOR_SIG,                  // SIG with problems
   SENSOR_TIMER,                // timer with problems
@@ -20,28 +21,6 @@ typedef enum
   SENSOR_MEMORY,               // no more memory available
 } SensorErrorCode;
 
-struct SensorRawData
-{
-  bool interesting;   // interesting sensor (with battery) 
-  string allData;     // all sensor data
-  string name;        // contained sensor name
-  string config;      // contained config data
-  string state;       // contained state data
-};
-
-struct PhysicalSensorsData
-{
-  string sensorname;
-  string batterycharge;
-  string humidity;
-  string pressure;
-  string temperature;
-  string sensordate;
-  string sensortime;
-  string owntime;
-  int state;
-};
-
 
 class Parser
 {
@@ -49,14 +28,16 @@ public:
     Parser();
     ~Parser();
 
-    vector<struct PhysicalSensorsData> getMeasurementData( list<string>,
-        vector<struct SensorRawData>, string );
-    list<string> sensorsNames( vector<struct SensorRawData> );
-    vector<struct SensorRawData> getSensorsRawDataStrings( string );
+    vector<string> getSensorsRawDataStrings( string );
     string getSensorName( string );
     string getSensorConfig( string );
     string getSensorState( string );
     bool isInterestingSensor( string );
+    string getBatteryChargeString( string );
+    string getHumidityString( string );
+    string getPressureString( string );
+    string getTemperatureString( string );
+    vector<string> getDateTimeString( string );
 
 private:
     const char *findMatchingCurlyBrace( const char * );

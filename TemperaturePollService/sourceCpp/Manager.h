@@ -11,7 +11,7 @@
 using namespace std::chrono;
 
 
-//#define DEBUG                             // debugging enabled
+#define DEBUG                             // debugging enabled
 #ifdef  DEBUG
     #define TIMER_REPEAT_TIME     2         // polling repeat time [sec]
 #else
