@@ -17,7 +17,11 @@ function plotTemperatureOverview( t, tab1, tab2, states, minT, maxT, both )
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Tagesmittelwerte
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    dt            = day( t );               % Kalendertage der Zeitmarken
+    d  = day( t );
+    m  = month( t );
+    y  = year( t );    
+    dt = 10000 * y + 100 * m + d;
+
     availableDays = union( [], dt );        % Menge der in t vorhandenen Kalendertage
 
     M = length( t );
