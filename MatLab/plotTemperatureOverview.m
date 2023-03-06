@@ -3,8 +3,6 @@ function plotTemperatureOverview( t, tab1, tab2, states, minT, maxT, both )
     t1 = double( tab1.Temperatur ) / 100;
     t2 = double( tab2.Temperatur ) / 100;
 
-    withHeatingTimes = false;
-
     if( ~both )
         % Mittelwert der beiden Sensoren bilden
         temp( 1, : ) = ( t1 + t2 ) / 2;
@@ -52,43 +50,6 @@ function plotTemperatureOverview( t, tab1, tab2, states, minT, maxT, both )
 
     legends = [];
     legendStr = {};
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Heizzeiten: 8:00-9:30 Uhr und 17:30-19:00 Uhr
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if( withHeatingTimes == true )
-        dy = datetime( string( t( 1 ), "dd.MM.yyyy" ) );
-    
-        for n = 1 : N
-            d = dy + days( n - 1 );
-    
-            dt1 = d + hours( 8 );
-            dt2 = d + hours( 9 ) + minutes( 30 );
-            dt3 = d + hours( 17 ) + minutes( 30 );
-            dt4 = d + hours( 19 );
-    
-            if( n == 1 )
-                id = plot( [ dt1, dt1 ], [ minT, maxT ], 'r', 'linewidth', 1.0, ...
-                           'LineStyle', '-.' );
-                legendStr = [ legendStr, 'Heizung an' ]; %#ok<AGROW> 
-                legends = [ legends, id ]; %#ok<AGROW> 
-    
-                id = plot( [ dt2, dt2 ], [ minT, maxT ], 'm', 'linewidth', 1.0, ...
-                           'LineStyle', '-.' );
-                legendStr = [ legendStr, 'Heizung aus' ]; %#ok<AGROW> 
-                legends = [ legends, id ]; %#ok<AGROW> 
-            else
-                plot( [ dt1, dt1 ], [ minT, maxT ], 'r', 'linewidth', 1.0, ...
-                      'linestyle', '-.' )
-                plot( [ dt2, dt2 ], [ minT, maxT ], 'm', 'linewidth', 1.0, ...
-                      'linestyle', '-.' )
-            end
-            plot( [ dt3, dt3 ], [ minT, maxT ], 'r', 'linewidth', 1.0, ...
-                  'linestyle', '-.' )
-            plot( [ dt4, dt4 ], [ minT, maxT ], 'm', 'linewidth', 1.0, ...
-                  'linestyle', '-.' )
-        end
-    end
 
     colors = [ 'k', 'b' ];
 

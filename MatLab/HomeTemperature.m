@@ -43,7 +43,14 @@ function HomeTemperature()
         { datetime( '17.02.2023  9:30' ), '"Sonne":  -2, "Mond": -3' };
         { datetime( '24.02.2023 10:17' ), '"Sonne":  -1, "Mond": -2' };
         { datetime( '03.03.2023  0:35' ), '"Sonne":  -3, "Mond": -3' };
-   ];
+        { datetime( '06.03.2023 10:10' ), '"Sonne":  -2, "Mond": -2' };
+    ];
+
+    % zu alte "states" ausblenden
+    tm     = states( :, 1 );
+    tm     = cellfun( @datetime, tm );
+    ndx    = isbetween( tm, t( end ) - days, t( end ) );
+    states = states( ndx, : );
 
     % Verlauf der Temperatur plotten
     minT = -10;
