@@ -3,8 +3,8 @@ function plotMeanTemperatures( t, tab1, tab2, minT, maxT, both  )
     t1 = double( tab1.Temperatur ) / 100;
     t2 = double( tab2.Temperatur ) / 100;
 
-    [ time, meanTemp1, meanTemp2 ] = ...
-        calcMeanTemperature( t, t1, t2 );
+    [ time, meanTemp1 ] = calcMeanTemperature( t, t1 );
+    [ ~,    meanTemp2 ] = calcMeanTemperature( t, t2 );
 
     if( ~both )
         meanTemp( 1, : ) = ( meanTemp1 + meanTemp2 ) / 2;
@@ -31,7 +31,7 @@ function plotMeanTemperatures( t, tab1, tab2, minT, maxT, both  )
     ylabel( 'Tagesmittelwerte Temperatur [°]', 'FontSize', 12, 'FontWeight', 'normal' )
 
     % Plotten
-    legends = [];
+    legends   = [];
     legendStr = {};
 
     for s = 1 : S

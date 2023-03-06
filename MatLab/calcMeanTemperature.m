@@ -1,20 +1,22 @@
 
-function [ time, meanTempIndoor, meanTempOutdoor ] = ...
-    calcMeanTemperature( t, t1, t2 )
+function [ time, meanTemp ] = calcMeanTemperature( t, t1 )
 
-    dt            = day( t );               % Kalendertage der Zeitmarken
+    d  = day( t );
+    m  = month( t );
+    y  = year( t );    
+    dt = 10000 * y + 100 * m + d;
+
     availableDays = union( [], dt );        % Menge der in t vorhandenen Kalendertage
 
     N = length( availableDays );
 
-    time            = datetime;
-    meanTempIndoor  = zeros( N, 1 );
-    meanTempOutdoor = zeros( N, 1 );
-    for n = 1 : N
-        ndx = find( day( t ) == availableDays( n ) );
+    time     = datetime;
+    meanTemp = zeros( N, 1 );
 
-        meanTempIndoor( n )  = mean( t1( ndx ) );
-        meanTempOutdoor( n ) = mean( t2( ndx ) );
-        time( n )            = datetime( string( t( ndx( 1 ) ), "dd.MM.yyyy" ) );
+    for n = 1 : N
+        ndx = find( dt == availableDays( n ) );
+
+        meanTemp( n ) = mean( t1( ndx ) );
+        time( n )     = datetime( string( t( ndx( 1 ) ), "dd.MM.yyyy" ) );
     end
 end
