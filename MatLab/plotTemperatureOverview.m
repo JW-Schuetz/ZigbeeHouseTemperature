@@ -11,30 +11,14 @@ function plotTemperatureOverview( t, tab1, tab2, states, minT, maxT, both )
         temp( 2, : ) = t2;
     end
 
-    % Anzahl der zu plottenden Temperaturkurven
-    S = size( temp, 1 );
-
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Tagesmittelwerte
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    d  = day( t );
-    m  = month( t );
-    y  = year( t );    
-    dt = 10000 * y + 100 * m + d;
+    S        = size( temp, 1 );
+    meanTemp = zeros( S, length( t ) );
 
-    availableDays = union( [], dt );        % Menge der in t vorhandenen Kalendertage
-
-    M = length( t );
-    N = length( availableDays );
-
-    meanTemp = zeros( S, M );
-    for n = 1 : N
-        % Auswahlindex für Array t und den Kalendertag n
-        ndx = ( dt == availableDays( n ) );
-
-        for s = 1 : S
-            meanTemp( s, ndx ) = mean( temp( s, ndx ) );
-        end
+    for s = 1 : S
+        [ ~, meanTemp( s, : ) ] = calcMeanTemperature( t, temp( s, : ), 1 );
     end
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -45,7 +29,6 @@ function plotTemperatureOverview( t, tab1, tab2, states, minT, maxT, both )
     hold on
     grid on
 
-    yyaxis left
     ylim( [ minT, maxT ] )
     yticks( minT : 1 : maxT )
 
@@ -71,10 +54,6 @@ function plotTemperatureOverview( t, tab1, tab2, states, minT, maxT, both )
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Tagesmittelwerte
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    yyaxis right
-    ylim( [ minT, maxT ] )
-    yticks( minT : 1 : maxT )
-
     for s = 1 : S
         id = plot( t, meanTemp( s, : ), colors( s ), 'linewidth', 0.5, 'linestyle', '-' );
 
@@ -108,9 +87,7 @@ function plotTemperatureOverview( t, tab1, tab2, states, minT, maxT, both )
     ax.XAxis.MinorTickValues = tickvals( 1 ) : diff( tickvals( 1 : 2 ) ) / 12  : ...
         tickvals( end );
     ax.XAxis.MinorTick = 'on';
-
-    ax.YAxis(1).Color = 'k';
-    ax.YAxis(2).Color = 'k';
+    ax.YAxis.Color = 'k';
 
     % als JPG speichern
 	saveas( fig, 'Temperature.jpg' )
