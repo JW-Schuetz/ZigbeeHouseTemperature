@@ -94,7 +94,7 @@ string Parser::getSensorInternalData( string internal, regex_t regcomp )
 }
 
 
-bool Parser::isInterestingSensor( string config )
+bool Parser::isWeatherSensor( string config )
 {
     regex_t regcomp = regexp->getCompiledRegexp( 4 ); // regex for battery
 
@@ -192,7 +192,7 @@ vector<string> Parser::getDateTimeString( string state )
 string Parser::getBatteryCharge( string config, regex_t regcomp )
 {
   int ret = regexec( &regcomp, config.c_str(), ARRAY_SIZE( pmatch ), pmatch, 0 );
-  if( ret == 0 )  // battery should be always there (sensor is interesting) but anyway
+  if( ret == 0 )  // battery should be always there (because isWeatherSensor == true) but anyway
   {
     int startNdx = pmatch[0].rm_so; // index to first matched char
     int endNdx = pmatch[0].rm_eo;   // index to first unmatched char after end of match

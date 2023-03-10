@@ -32,7 +32,7 @@ public:
     string getSensorName( string );
     string getSensorConfig( string );
     string getSensorState( string );
-    bool isInterestingSensor( string );
+    bool isWeatherSensor( string );
     string getBatteryChargeString( string );
     string getHumidityString( string );
     string getPressureString( string );

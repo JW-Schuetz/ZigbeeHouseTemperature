@@ -3,21 +3,6 @@
 #include "Manager.h"
 
 
-// initialized storage for static data-members
-duration<int,ratio<1,1>> Manager::sleep_time { TIMER_REPEAT_TIME };
-
-struct WriteMemoryStruct Manager::content {};
-struct curl_slist *Manager::poll_headers {};
-CURLM *Manager::poll_handle {};
-CURLM *Manager::sendfile_handle {};
-struct tm Manager::oldTime {};
-struct tm Manager::actTime {};
-string Manager::localFileName {};
-string Manager::remoteFileName {};
-FILE *Manager::fileToSend {};
-Sensor *Manager::sensor {};
-
-
 // private functions
 size_t Manager::write_data( void *buffer, size_t size, size_t nmemb, void *userp )
 {
@@ -169,6 +154,8 @@ void Manager::transferDataFile()
 // public functions
 Manager::Manager()
 {
+  sleep_time = TIMER_REPEAT_TIME;
+
   setTime( &actTime );    // initialize both time stamps
   oldTime = actTime;
 
@@ -178,7 +165,7 @@ Manager::Manager()
   if( ret != CURLE_OK ) throw( string { "Manager::Manager" } );
 
   construct_poll_handle();
-  sensor = new Sensor();
+  sensor = new WeatherSensor();
 }
 
 
@@ -202,16 +189,12 @@ void Manager::executionloop()
   while( true )
   {
 #endif
-
     // get actual timestamp and provide actual filename for file transfer to NAS
     string timeStamp = manageTime();
 
     // read Zigbee gateways REST-API to get the rawdata string containing data
-    // of all sensors
-    sensor->zigbeeRawDataString = getRawDataString();
-
-    // parse this rawdata string
-    sensor->parseSensorData( timeStamp );
+    // of all sensors, parse this rawdata string
+    sensor->parseSensorData( timeStamp, getRawDataString() );
 
     // write parsed sensor data into file
     sensor->writeDataToFile( localFileName );

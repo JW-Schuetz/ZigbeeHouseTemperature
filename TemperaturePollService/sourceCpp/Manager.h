@@ -5,17 +5,18 @@
 #include <vector>
 #include "Curl.h"
 #include "Credentials.h"
-#include "Sensor.h"
+#include "WeatherSensor.h"
 
 
 using namespace std::chrono;
+using namespace std::chrono_literals;
 
 
-#define DEBUG                             // debugging enabled
+//#define DEBUG                             // debugging enabled
 #ifdef  DEBUG
-    #define TIMER_REPEAT_TIME     2         // polling repeat time [sec]
+    #define TIMER_REPEAT_TIME   2s          // polling repeat time
 #else
-    #define TIMER_REPEAT_TIME   900         // polling repeat time [sec]
+    #define TIMER_REPEAT_TIME   15min       // polling repeat time
 #endif
 
 #ifdef DEBUG
@@ -41,30 +42,30 @@ public:
     Manager();
     ~Manager();
 
-    static void executionloop();        // execution-loop
+    void executionloop();        // execution-loop
 
 private:
-    static void generateFileNames();    // generate local and remote filename
-    static string manageTime();         // return actual timestamp and provide actual filename for file transfer to NAS
-    static void transferDataFile();     // FTP-tansfer file to NAS
-    static string getRawDataString();   // read rawdata string containing data of all Zigbee sensors
+    void generateFileNames();    // generate local and remote filename
+    string manageTime();         // return actual timestamp and provide actual filename for file transfer to NAS
+    void transferDataFile();     // FTP-tansfer file to NAS
+    string getRawDataString();   // read rawdata string containing data of all Zigbee sensors
     void construct_poll_handle();       // easy handle for Zigbee gateway polling
     void destruct_poll_handle();
-    static void construct_sendfile_handle();    // easy handle for sending file to NAS
-    static void destruct_sendfile_handle();
+    void construct_sendfile_handle();    // easy handle for sending file to NAS
+    void destruct_sendfile_handle();
     static size_t write_data( void *, size_t, size_t, void * ); // writefunction for curl
-    static void setTime( struct tm * );                         // get time stamp from operation system
-    static string time2string( struct tm );                     // convert time to string
+    void setTime( struct tm * );                                // get time stamp from operation system
+    string time2string( struct tm );                            // convert time to string
 
-    static FILE *fileToSend;                                // file handle of FTP-sent file to NAS
-    static struct tm oldTime;                               // previous time stamp
-    static struct tm actTime;                               // actual time stamp
-    static duration<int,ratio<1,1>> sleep_time;             // sleeping time
-    static string localFileName;                            // actual local filename
-    static string remoteFileName;                           // actual remote filename
-    static struct WriteMemoryStruct content;                // storage for curl writefunction
-    static struct curl_slist *poll_headers;                 // headers list of easy_handle poll_handle
-    static CURLM *poll_handle;                              // easy_handle for reading URL
-    static CURLM *sendfile_handle;                          // easy_handle for sending file to NAS
-    static Sensor *sensor;                                  // sensor object
+    FILE *fileToSend;                                // file handle of FTP-sent file to NAS
+    struct tm oldTime;                               // previous time stamp
+    struct tm actTime;                               // actual time stamp
+    duration<int,ratio<1,1>> sleep_time;             // sleeping time
+    string localFileName;                            // actual local filename
+    string remoteFileName;                           // actual remote filename
+    struct WriteMemoryStruct content;                // storage for curl writefunction
+    struct curl_slist *poll_headers;                 // headers list of easy_handle poll_handle
+    CURLM *poll_handle;                              // easy_handle for reading URL
+    CURLM *sendfile_handle;                          // easy_handle for sending file to NAS
+    WeatherSensor *sensor;                           // sensor object
 };
