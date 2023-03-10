@@ -1,5 +1,5 @@
 function [ t, tab1, tab2 ] = readTable( days )
-    % Spalten-Namen und Spalten-Typen
+    % define column names and types
 	names = {   'Zeitstempel', 'Sensorname1', 'Batteriezustand1', ...
                 'Luftfeuchtigkeit1', 'Luftdruck1', 'Temperatur1', ...
                 'Sensordatum1', 'Sensorzeit1', 'Sensorname2', ...
@@ -11,11 +11,11 @@ function [ t, tab1, tab2 ] = readTable( days )
                 'uint16', 'uint16', 'int16', 'datetime', 'datetime'
             };
 
-    % alle *.csv-Dateien im Verzeichnis 2023
-    t    = datetime( now, 'ConvertFrom', 'datenum' );
-    jahr = year( t );
+    t = datetime( now, 'ConvertFrom', 'datenum' );
+    y = year( t );
 
-    dataDir = [ 'D:\Projekte\ZigbeeHouseTemperature\SensorValues\', sprintf( '%4d\\', jahr ) ];
+    % all *.csv files in directory "y"
+    dataDir = [ 'D:\Projekte\ZigbeeHouseTemperature\SensorValues\', sprintf( '%4d\\', y ) ];
     files = dir( [ dataDir, '*.csv' ] );
 
     if( isempty( files ) )
@@ -38,16 +38,16 @@ function [ t, tab1, tab2 ] = readTable( days )
         tab = [ tab; A ]; %#ok<AGROW> 
     end
 
-    % tab aufwärts sortieren nach Zeitstempel
+    % sort tab, increasing time stamp
     [ t, ndx ] = sort( tab.Zeitstempel );
     tab = tab( ndx, : );
 
-    % nur die letzten "days" Tage auswerten
+    % use only last "days"
     ndx = isbetween( t, t( end ) - days, t( end ) );
     tab = tab( ndx, : );
     t   = t( ndx, : );
 
-    % Datum und Zeitstempel der Sensoren zusammenfassen
+    % integrate date and time
     tab.Sensordatum1.Format = 'dd.MM.uuuu HH:mm';
     tab.Sensorzeit1.Format  = 'dd.MM.uuuu HH:mm';
     tab.Sensordatum2.Format = 'dd.MM.uuuu HH:mm';
@@ -65,9 +65,7 @@ function [ t, tab1, tab2 ] = readTable( days )
 
     tab = [ tab, STimes ];
 
-% 'VariableTypes', { 'string', 'uint16', 'uint16', 'uint16', 'int16', 'datetime' }
-
-    % Sensoren trennen
+    % separate sensors
     tab1 = table( tab.Sensorname1, tab.Batteriezustand1, ...
                   tab.Luftfeuchtigkeit1, tab.Luftdruck1, tab.Temperatur1, ...
                   tab.Sensorzeit1, 'VariableNames', { 'Sensorname', ...

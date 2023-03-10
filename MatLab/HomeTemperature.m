@@ -44,6 +44,8 @@ function HomeTemperature()
         { datetime( '24.02.2023 10:17' ), '"Sonne":  -1, "Mond": -2' };
         { datetime( '03.03.2023  0:35' ), '"Sonne":  -3, "Mond": -3' };
         { datetime( '06.03.2023 10:10' ), '"Sonne":  -2, "Mond": -2' };
+        { datetime( '09.03.2023  9:17' ), '"Sonne":  -1, "Mond": -1' };
+        { datetime( '10.03.2023  9:22' ), '"Sonne":   0, "Mond":  0' };
     ];
 
     % zu alte "states" ausblenden
