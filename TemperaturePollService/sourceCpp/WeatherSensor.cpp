@@ -78,7 +78,10 @@ void WeatherSensor::parseSensorData( string time, string rawDataString )
 
     ulong sensorsOfInterestCount = 0;   // count isWeatherSensor sensors (those with a battery)
     for( auto & iter: rawData )
+    {
+      iter.isWeatherSensor = parser->isWeatherSensor( string( iter.config ) );
       if( iter.isWeatherSensor ) ++sensorsOfInterestCount;
+    }
 
     // plausibility-check: every isWeatherSensor sensor must consist of 3 "physical"
     // sensors for measuring temperature, pressure and humidity

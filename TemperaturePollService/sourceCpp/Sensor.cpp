@@ -38,6 +38,5 @@ void Sensor::parseSensorData( string time, string zigbeeRawDataString )
       iter.name = parser->getSensorName( string( iter.allData ) );
       iter.config = parser->getSensorConfig( string( iter.allData ) );
       iter.state = parser->getSensorState( string( iter.allData ) );
-      iter.isWeatherSensor = parser->isWeatherSensor( string( iter.config ) );
     }
 }
