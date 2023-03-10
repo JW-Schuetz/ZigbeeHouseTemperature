@@ -154,17 +154,18 @@ void Manager::transferDataFile()
 // public functions
 Manager::Manager()
 {
-  sleep_time = TIMER_REPEAT_TIME;
+  sleep_time = TIMER_REPEAT_TIME;   // initialize sleep timespan
 
-  setTime( &actTime );    // initialize both time stamps
+  setTime( &actTime );              // initialize both time stamps
   oldTime = actTime;
 
-  generateFileNames();    // initialize filenames
+  generateFileNames();              // initialize filenames
 
   CURLcode ret = curl_global_init( CURL_GLOBAL_ALL );
   if( ret != CURLE_OK ) throw( string { "Manager::Manager" } );
 
   construct_poll_handle();
+
   sensor = new WeatherSensor();
 }
 
@@ -178,7 +179,7 @@ Manager::~Manager()
 }
 
 
-void Manager::executionloop()
+void Manager::executionLoop()
 {
 #ifdef DEBUG
   int count = 0;

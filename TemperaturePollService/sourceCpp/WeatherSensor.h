@@ -4,9 +4,8 @@
 #include "Sensor.h"
 
 
-struct WeatherSensorsData
+typedef struct WeatherSensorsData
 {
-public:
   string sensorname;
   string batterycharge;
   string humidity;
@@ -29,7 +28,10 @@ public:
     owntime = {};
     state = SENSOR_NOTOK;
   }
-};
+} WeatherSensorsData;
+
+
+typedef vector<WeatherSensorsData> vectorWSData;
 
 
 class WeatherSensor: public Sensor
@@ -40,13 +42,12 @@ public:
 
 private:
     list<string> uniqueSensorNames();   // calculate unique weather sensor names
-    vector<struct WeatherSensorsData> parseMeasurementData( list<string>,
-        vector<struct SensorRawData>, string );
+    vectorWSData parseMeasurementData( list<string>, string );
 
     // A weather sensor consist of three virtual sensors measuring temperature, pressure and humidity.
     // There are maybe more sensors known to the zigbee gateway, for instance a generic
     // "daylight sensor". These sensors don't have a battery and are of no interest, 
     // they will be ignored.
-
-    vector<struct WeatherSensorsData> sensorData; // parsed data of all sensors
+    vectorSRData rawDataWeatherSensors;   // raw data of weather sensors
+    vectorWSData sensorData;              // parsed data of all sensors
 };

@@ -28,11 +28,14 @@ using namespace std::chrono_literals;
 #define FILENAME_POSTFIX    ".csv"
 
 
-struct WriteMemoryStruct
+typedef struct WriteMemoryStruct
 {
     int size;
     vector<char> memory;
-};
+} WriteMemoryStruct;
+
+
+typedef duration<int,ratio<1,1>> timespan;
 
 
 class Manager
@@ -42,7 +45,7 @@ public:
     Manager();
     ~Manager();
 
-    void executionloop();        // execution-loop
+    void executionLoop();        // execution-loop
 
 private:
     void generateFileNames();    // generate local and remote filename
@@ -53,19 +56,19 @@ private:
     void destruct_poll_handle();
     void construct_sendfile_handle();    // easy handle for sending file to NAS
     void destruct_sendfile_handle();
-    static size_t write_data( void *, size_t, size_t, void * ); // writefunction for curl
     void setTime( struct tm * );                                // get time stamp from operation system
     string time2string( struct tm );                            // convert time to string
+    static size_t write_data( void *, size_t, size_t, void * ); // writefunction for curl
 
-    FILE *fileToSend;                                // file handle of FTP-sent file to NAS
-    struct tm oldTime;                               // previous time stamp
-    struct tm actTime;                               // actual time stamp
-    duration<int,ratio<1,1>> sleep_time;             // sleeping time
-    string localFileName;                            // actual local filename
-    string remoteFileName;                           // actual remote filename
-    struct WriteMemoryStruct content;                // storage for curl writefunction
-    struct curl_slist *poll_headers;                 // headers list of easy_handle poll_handle
-    CURLM *poll_handle;                              // easy_handle for reading URL
-    CURLM *sendfile_handle;                          // easy_handle for sending file to NAS
-    WeatherSensor *sensor;                           // sensor object
+    FILE *fileToSend;                   // file handle of FTP-sent file to NAS
+    struct tm oldTime;                  // previous time stamp
+    struct tm actTime;                  // actual time stamp
+    timespan sleep_time;                // sleeping time span
+    string localFileName;               // actual local filename
+    string remoteFileName;              // actual remote filename
+    WriteMemoryStruct content;          // storage for curl writefunction
+    struct curl_slist *poll_headers;    // headers list of easy_handle poll_handle
+    CURLM *poll_handle;                 // easy_handle for reading URL
+    CURLM *sendfile_handle;             // easy_handle for sending file to NAS
+    WeatherSensor *sensor;              // sensor object
 };

@@ -8,7 +8,7 @@ int main()
   try
   {
     Manager *manager = new Manager();
-    manager->executionloop();
+    manager->executionLoop();
 
     // the following code should never be reached
     delete manager;
