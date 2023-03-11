@@ -4,6 +4,7 @@
 #include <chrono>
 #include <vector>
 #include "Curl.h"
+#include "SendFileHandle.h"
 #include "Credentials.h"
 #include "WeatherSensor.h"
 
@@ -68,7 +69,7 @@ private:
     string remoteFileName;              // actual remote filename
     WriteMemoryStruct content;          // storage for curl writefunction
     struct curl_slist *pollHeaders;     // headers list of easy_handle poll_handle
-    CURLM *poll_handle;                 // easy_handle for reading URL
-    CURLM *sendfileHandle;              // easy_handle for sending file to NAS
+    CURL *pollHandle;                   // easy_handle for reading URL
+    SendFileHandle *sendHandle;         // pointer to sendHandle object (for sending file to NAS)
     WeatherSensor *sensor;              // pointer to sensor object
 };
