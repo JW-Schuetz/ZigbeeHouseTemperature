@@ -24,10 +24,9 @@ public:
     virtual ~Sensor();
 
 protected:
-    Parser *parser;     // parser object
-    string timeStamp;   // polling timeStamp
-
-    vectorSRData rawData;     // rawData for each sensor
+    Parser *parser;       // pointer to parser object
+    string timeStamp;     // polling timeStamp
+    vectorSRData rawData; // rawData for each sensor
 
     virtual void parseSensorData( string, string ); // parse sensors rawData
 };

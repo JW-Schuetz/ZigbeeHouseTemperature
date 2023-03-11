@@ -32,7 +32,7 @@ void WeatherSensor::parseSensorData( string time, string rawDataString )
         throw( string { "WeatherSensor::parseSensorsData weatherSensorCount" } );
 
     // parse measurement data of all physical sensors using their individual raw data strings
-    sensorData = parseMeasurementData( sensorNames, timeStamp );
+    sensorData = parseMeasurementData( timeStamp, sensorNames );
 }
 
 
@@ -48,7 +48,7 @@ list<string> WeatherSensor::uniqueSensorNames()
 }
 
 
-vectorWSData WeatherSensor::parseMeasurementData( list<string> sensorNames, string timeStamp )
+vectorWSData WeatherSensor::parseMeasurementData( string timeStamp , list<string> sensorNames )
 {
   ulong physicalSensorCount = sensorNames.size();
   vectorWSData sensorData( physicalSensorCount ); // create vector of size "physicalSensorCount"

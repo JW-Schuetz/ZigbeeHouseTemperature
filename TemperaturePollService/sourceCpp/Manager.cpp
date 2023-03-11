@@ -3,10 +3,36 @@
 #include "Manager.h"
 
 
-// private functions
-size_t Manager::write_data( void *buffer, size_t size, size_t nmemb, void *userp )
+Manager::Manager()
 {
-  // function "write_data" may be called more than once
+  sleepTime = TIMER_REPEAT_TIME;   // initialize sleep timespan
+
+  setTime( &actTime );              // initialize both time stamps
+  oldTime = actTime;
+
+  generateFileNames();              // initialize filenames
+
+  CURLcode ret = curl_global_init( CURL_GLOBAL_ALL );
+  if( ret != CURLE_OK ) throw( string { "Manager::Manager" } );
+
+  constructPollHandle();
+
+  sensor = new WeatherSensor();
+}
+
+
+Manager::~Manager()
+{
+  delete sensor;
+  destructPollHandle();
+
+  curl_global_cleanup();
+}
+
+
+size_t Manager::writeData( void *buffer, size_t size, size_t nmemb, void *userp )
+{
+  // function "writeData" may be called more than once
   // "buffer": pointer to new data to be saved
   // "size": always equal 1
   // "nmemb": size of data to be saved, maybe equal 0
@@ -23,29 +49,55 @@ size_t Manager::write_data( void *buffer, size_t size, size_t nmemb, void *userp
 }
 
 
-void Manager::construct_poll_handle()
+void Manager::constructPollHandle()
 {
     poll_handle = curl_easy_init();
-    if( poll_handle == NULL ) throw( string { "Manager::construct_poll_handle" } );
+    if( poll_handle == NULL ) throw( string { "Manager::constructPollHandle" } );
 
     // set parameters for reading from URL
-    poll_headers = {};
+    pollHeaders = {};
 
     curl_easy_setopt( poll_handle, CURLOPT_URL, URL );
     curl_easy_setopt( poll_handle, CURLOPT_HTTPGET, 1L );
     curl_easy_setopt( poll_handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1 );
-    curl_easy_setopt( poll_handle, CURLOPT_WRITEFUNCTION, write_data );
+    curl_easy_setopt( poll_handle, CURLOPT_WRITEFUNCTION, writeData );
     curl_easy_setopt( poll_handle, CURLOPT_WRITEDATA, (void *)&content );
 
     // pass our list of custom made headers
-    curl_easy_setopt( poll_handle, CURLOPT_HTTPHEADER, poll_headers );
+    curl_easy_setopt( poll_handle, CURLOPT_HTTPHEADER, pollHeaders );
 }
 
 
-void Manager::destruct_poll_handle()
+void Manager::destructPollHandle()
 {
-    curl_slist_free_all( poll_headers );
+    curl_slist_free_all( pollHeaders );
     curl_easy_cleanup( poll_handle );
+}
+
+
+void Manager::constructSendfileHandle()
+{
+    sendfileHandle = curl_easy_init();
+    if( sendfileHandle == NULL ) throw( string { "Manager::constructSendfileHandle curl_easy_init" } );
+
+    fileToSend = fopen( localFileName.c_str(), "r" );
+    if( fileToSend == NULL ) throw( string { "Manager::constructSendfileHandle fopen" } );
+
+    // set curls parameters for filetransfer to NAS
+    curl_easy_setopt( sendfileHandle, CURLOPT_URL, remoteFileName.c_str() );
+    curl_easy_setopt( sendfileHandle, CURLOPT_READDATA, (void *)fileToSend );
+    curl_easy_setopt( sendfileHandle, CURLOPT_UPLOAD, 1L );
+    curl_easy_setopt( sendfileHandle, CURLOPT_FTP_CREATE_MISSING_DIRS, CURLFTP_CREATE_DIR );
+    curl_easy_setopt( sendfileHandle, CURLOPT_USERPWD, FTPCREDENTIALS );
+}
+
+
+void Manager::destructSendfileHandle()
+{
+    int ret = fclose( fileToSend );
+    if( ret != 0 ) throw( string { "Manager::destructSendfileHandle" } );
+
+    curl_easy_cleanup( sendfileHandle );
 }
 
 
@@ -114,68 +166,14 @@ void Manager::generateFileNames()
 }
 
 
-void Manager::construct_sendfile_handle()
-{
-    sendfile_handle = curl_easy_init();
-    if( sendfile_handle == NULL ) throw( string { "Manager::construct_sendfile_handle curl_easy_init" } );
-
-    fileToSend = fopen( localFileName.c_str(), "r" );
-    if( fileToSend == NULL ) throw( string { "Manager::construct_sendfile_handle fopen" } );
-
-    // set curls parameters for filetransfer to NAS
-    curl_easy_setopt( sendfile_handle, CURLOPT_URL, remoteFileName.c_str() );
-    curl_easy_setopt( sendfile_handle, CURLOPT_READDATA, (void *)fileToSend );
-    curl_easy_setopt( sendfile_handle, CURLOPT_UPLOAD, 1L );
-    curl_easy_setopt( sendfile_handle, CURLOPT_FTP_CREATE_MISSING_DIRS, CURLFTP_CREATE_DIR );
-    curl_easy_setopt( sendfile_handle, CURLOPT_USERPWD, FTPCREDENTIALS );
-}
-
-
-void Manager::destruct_sendfile_handle()
-{
-    int ret = fclose( fileToSend );
-    if( ret != 0 ) throw( string { "Manager::destruct_sendfile_handle" } );
-
-    curl_easy_cleanup( sendfile_handle );
-}
-
-
 void Manager::transferDataFile()
 {
-  construct_sendfile_handle();
+  constructSendfileHandle();
 
-  CURLcode cres = curl_easy_perform( sendfile_handle );
+  CURLcode cres = curl_easy_perform( sendfileHandle );
   if( cres != CURLE_OK ) throw( string { "Manager::transferDataFile" } );
 
-  destruct_sendfile_handle();
-}
-
-
-// public functions
-Manager::Manager()
-{
-  sleep_time = TIMER_REPEAT_TIME;   // initialize sleep timespan
-
-  setTime( &actTime );              // initialize both time stamps
-  oldTime = actTime;
-
-  generateFileNames();              // initialize filenames
-
-  CURLcode ret = curl_global_init( CURL_GLOBAL_ALL );
-  if( ret != CURLE_OK ) throw( string { "Manager::Manager" } );
-
-  construct_poll_handle();
-
-  sensor = new WeatherSensor();
-}
-
-
-Manager::~Manager()
-{
-  delete sensor;
-  destruct_poll_handle();
-
-  curl_global_cleanup();
+  destructSendfileHandle();
 }
 
 
@@ -204,6 +202,6 @@ void Manager::executionLoop()
     transferDataFile();
 
     // sleep
-    this_thread::sleep_for( sleep_time ); // wait TIMER_REPEAT_TIME seconds
+    this_thread::sleep_for( sleepTime ); // wait TIMER_REPEAT_TIME seconds
   }
 }

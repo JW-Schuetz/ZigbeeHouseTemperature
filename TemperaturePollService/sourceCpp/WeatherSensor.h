@@ -42,7 +42,7 @@ public:
 
 private:
     list<string> uniqueSensorNames();   // calculate unique weather sensor names
-    vectorWSData parseMeasurementData( list<string>, string );
+    vectorWSData parseMeasurementData( string, list<string> );
 
     // A weather sensor consist of three virtual sensors measuring temperature, pressure and humidity.
     // There are maybe more sensors known to the zigbee gateway, for instance a generic
