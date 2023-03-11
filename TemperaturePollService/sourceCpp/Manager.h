@@ -55,13 +55,10 @@ private:
     string getRawDataString();          // read rawdata string containing data of all Zigbee sensors
     void constructPollHandle();         // construct easy handle for Zigbee gateway polling
     void destructPollHandle();
-    void constructSendfileHandle();     // construct easy handle for sending file to NAS
-    void destructSendfileHandle();
     void setTime( struct tm * );        // get time stamp from operation system
     string time2string( struct tm );    // convert time to string
     static size_t writeData( void *, size_t, size_t, void * ); // writefunction for curl
 
-    FILE *fileToSend;                   // file handle of FTP-sent file to NAS
     struct tm oldTime;                  // previous time stamp
     struct tm actTime;                  // actual time stamp
     timespan sleepTime;                 // sleeping time span

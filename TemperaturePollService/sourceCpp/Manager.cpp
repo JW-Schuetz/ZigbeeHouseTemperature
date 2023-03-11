@@ -75,16 +75,6 @@ void Manager::destructPollHandle()
 }
 
 
-void Manager::constructSendfileHandle()
-{
-}
-
-
-void Manager::destructSendfileHandle()
-{
-}
-
-
 string Manager::getRawDataString()
 {
     content.memory = {};              // no data initially
