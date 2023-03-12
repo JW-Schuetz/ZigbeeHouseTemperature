@@ -9,6 +9,8 @@ CurlSendFileToNAS::CurlSendFileToNAS( string localFileName, string remoteFileNam
     localFile = fopen( localFileName.c_str(), "r" );
     if( localFile == NULL ) throw( string { "CurlSendFileToNAS::CurlSendFileToNAS" } );
 
+    CURL *handle = getHandle();
+
     // set curls parameters for filetransfer to NAS
     curl_easy_setopt( handle, CURLOPT_URL, remoteFileName.c_str() );
     curl_easy_setopt( handle, CURLOPT_READDATA, (void *)localFile );

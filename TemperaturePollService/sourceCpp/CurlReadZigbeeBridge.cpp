@@ -8,6 +8,9 @@ WriteMemoryStruct CurlReadZigbeeBridge::content;          // storage for curl wr
 
 CurlReadZigbeeBridge::CurlReadZigbeeBridge()
 {
+    CURL *handle = getHandle();
+
+    // set curls parameters for reading zigbee bridge
     curl_easy_setopt( handle, CURLOPT_URL, URL );
     curl_easy_setopt( handle, CURLOPT_HTTPGET, 1L );
     curl_easy_setopt( handle, CURLOPT_WRITEFUNCTION, writeData );

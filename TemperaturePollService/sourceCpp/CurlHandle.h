@@ -10,9 +10,11 @@ public:
     CurlHandle();
     virtual ~CurlHandle();
 
-    CURL *getHandle();
     void perform();
 
 protected:
+    CURL *getHandle();
+
+private:
     CURL *handle;
 };
