@@ -72,7 +72,7 @@ function plotWeatherOverview( t, tab1, tab2, pMin, pMax, hMin, hMax, both )
         legends = [ legends, id ]; %#ok<AGROW> 
     end
 
-    legend( legends, legendStr, 'Location', 'northwest' )
+    legend( legends, legendStr, 'Location', 'north' )
 
     xtickangle( 45 )
     xtickformat( 'dd.MM HH:mm' )
