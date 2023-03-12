@@ -4,7 +4,8 @@
 #include <chrono>
 #include <vector>
 #include "Curl.h"
-#include "SendFileHandle.h"
+#include "CurlReadZigbeeBridge.h"
+#include "CurlSendFileToNAS.h"
 #include "Credentials.h"
 #include "WeatherSensor.h"
 
@@ -29,13 +30,6 @@ using namespace std::chrono_literals;
 #define FILENAME_POSTFIX    ".csv"
 
 
-typedef struct WriteMemoryStruct
-{
-    int size;
-    vector<char> memory;
-} WriteMemoryStruct;
-
-
 typedef duration<int,ratio<1,1>> timespan;
 
 
@@ -52,21 +46,15 @@ private:
     void generateFileNames();           // generate local and remote filename
     string manageTime();                // return actual timestamp and provide actual filename for file transfer to NAS
     void transferDataFile();            // FTP-tansfer file to NAS
-    string getRawDataString();          // read rawdata string containing data of all Zigbee sensors
-    void constructPollHandle();         // construct easy handle for Zigbee gateway polling
-    void destructPollHandle();
     void setTime( struct tm * );        // get time stamp from operation system
     string time2string( struct tm );    // convert time to string
-    static size_t writeData( void *, size_t, size_t, void * ); // writefunction for curl
 
     struct tm oldTime;                  // previous time stamp
     struct tm actTime;                  // actual time stamp
     timespan sleepTime;                 // sleeping time span
     string localFileName;               // actual local filename
     string remoteFileName;              // actual remote filename
-    WriteMemoryStruct content;          // storage for curl writefunction
-    struct curl_slist *pollHeaders;     // headers list of easy_handle poll_handle
-    CURL *pollHandle;                   // easy_handle for reading URL
-    SendFileHandle *sendHandle;         // pointer to sendHandle object (for sending file to NAS)
+
+    CurlReadZigbeeBridge *zigbeeHandle; // pointer to CurlReadZigbeeBridge (for reading Zigbee bridge)
     WeatherSensor *sensor;              // pointer to sensor object
 };
