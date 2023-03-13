@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "Sensor.h"
+#include "ZigbeeSensor.h"
 
 
 typedef struct WeatherSensorsData
@@ -33,8 +33,13 @@ typedef struct WeatherSensorsData
 
 typedef vector<WeatherSensorsData> vectorWSData;
 
+// A weather sensor consist of three virtual sensors measuring temperature, pressure and humidity.
+// There are maybe more sensors known to the zigbee gateway, for instance a generic
+// "daylight sensor". These sensors don't have a battery and are of no interest. 
+// They will be ignored in further processing steps.
 
-class WeatherSensor: public Sensor
+// handle a weather sensor attached to the zigbee bridge
+class ZigbeeWeatherSensor: public ZigbeeSensor
 {
 public:
     void parseSensorData( string, string );
@@ -42,12 +47,8 @@ public:
 
 private:
     list<string> uniqueSensorNames();   // calculate unique weather sensor names
-    vectorWSData parseMeasurementData( string, list<string> );
+    vectorWSData parseMeasurementData( string, list<string> );  // provide measured values
 
-    // A weather sensor consist of three virtual sensors measuring temperature, pressure and humidity.
-    // There are maybe more sensors known to the zigbee gateway, for instance a generic
-    // "daylight sensor". These sensors don't have a battery and are of no interest, 
-    // they will be ignored.
     vectorSRData rawDataWeatherSensors;   // raw data of weather sensors
     vectorWSData sensorData;              // parsed data of all sensors
 };

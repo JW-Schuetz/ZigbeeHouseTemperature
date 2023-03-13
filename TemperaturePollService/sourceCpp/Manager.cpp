@@ -15,15 +15,15 @@ Manager::Manager()
   CURLcode ret = curl_global_init( CURL_GLOBAL_ALL );
   if( ret != CURLE_OK ) throw( string { "Manager::Manager" } );
 
-  zigbeeHandle = new CurlReadZigbeeBridge();
-  sensor = new WeatherSensor();
+  zigbeeBridge = new ZigbeeBridge();
+  weatherSensor = new ZigbeeWeatherSensor();
 }
 
 
 Manager::~Manager()
 {
-  delete sensor;
-  delete zigbeeHandle;
+  delete weatherSensor;
+  delete zigbeeBridge;
 
   curl_global_cleanup();
 }
@@ -83,8 +83,8 @@ void Manager::generateFileNames()
 
 void Manager::transferDataFile()
 {
-  CurlSendFileToNAS handle( localFileName, remoteFileName );
-  handle.perform();  // perform curl actions
+  NAS transfer( localFileName, remoteFileName );
+  transfer.perform();  // perform curl actions
 }
 
 
@@ -99,20 +99,20 @@ void Manager::executionLoop()
   while( true )
   {
 #endif
-    // read Zigbee gateways REST-API to get the rawdata string containing all sensors
-    string rawDataString = zigbeeHandle->getRawDataString();
+    // Network: read Zigbee gateways REST-API to get the rawdata string containing all sensors
+    string rawDataString = zigbeeBridge->getRawDataString();
 
     // get actual timestamp and in case of calendar day change provide actual 
     // local filename and filename for file transfer to NAS
     string timeStamp = manageTime();
 
     // parse rawdata string
-    sensor->parseSensorData( timeStamp, rawDataString );
+    weatherSensor->parseSensorData( timeStamp, rawDataString );
 
-    // write parsed sensor data into file
-    sensor->writeDataToFile( localFileName );
+    // write parsed weatherSensor data into file
+    weatherSensor->writeDataToFile( localFileName );
 
-    // FTP-transfer local result file to NAS
+    // Network: FTP-transfer local result file to NAS
     transferDataFile();
 
     // sleep

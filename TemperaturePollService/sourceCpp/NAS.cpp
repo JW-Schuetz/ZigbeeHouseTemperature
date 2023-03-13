@@ -1,13 +1,13 @@
 
 #include "Credentials.h"
-#include "CurlSendFileToNAS.h"
+#include "NAS.h"
 
 
-CurlSendFileToNAS::CurlSendFileToNAS( string localFileName, string remoteFileName )
+NAS::NAS( string localFileName, string remoteFileName )
 {
     // open local file for reading
     localFile = fopen( localFileName.c_str(), "r" );
-    if( localFile == NULL ) throw( string { "CurlSendFileToNAS::CurlSendFileToNAS" } );
+    if( localFile == NULL ) throw( string { "NAS::NAS" } );
 
     CURL *handle = getHandle();
 
@@ -20,7 +20,7 @@ CurlSendFileToNAS::CurlSendFileToNAS( string localFileName, string remoteFileNam
 }
 
 
-CurlSendFileToNAS::~CurlSendFileToNAS()
+NAS::~NAS()
 {
     fclose( localFile );
 }

@@ -22,6 +22,7 @@ typedef enum
 } SensorErrorCode;
 
 
+// handle string parsing using regular expressions
 class Parser
 {
 public:

@@ -4,10 +4,10 @@
 #include <chrono>
 #include <vector>
 #include "Curl.h"
-#include "CurlReadZigbeeBridge.h"
-#include "CurlSendFileToNAS.h"
+#include "ZigbeeBridge.h"
+#include "NAS.h"
 #include "Credentials.h"
-#include "WeatherSensor.h"
+#include "ZigbeeWeatherSensor.h"
 
 
 using namespace std::chrono;
@@ -33,6 +33,7 @@ using namespace std::chrono_literals;
 typedef duration<int,ratio<1,1>> timespan;
 
 
+// handle programs overall task
 class Manager
 {
 public:
@@ -55,6 +56,6 @@ private:
     string localFileName;               // actual local filename
     string remoteFileName;              // actual remote filename
 
-    CurlReadZigbeeBridge *zigbeeHandle; // pointer to CurlReadZigbeeBridge (for reading Zigbee bridge)
-    WeatherSensor *sensor;              // pointer to sensor object
+    ZigbeeBridge *zigbeeBridge;         // pointer to ZigbeeBridge (for reading Zigbee bridge)
+    ZigbeeWeatherSensor *weatherSensor; // pointer to weatherSensor object
 };

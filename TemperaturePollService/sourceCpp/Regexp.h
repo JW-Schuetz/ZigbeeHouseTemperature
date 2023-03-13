@@ -8,13 +8,14 @@
 using namespace std;
 
 
+// handle all regular expressions (POSIX), provide compiled form
 class Regexp
 {
     static const int N = 13;
 
     string regexp[N] =  // regexp's to be translated
     {
-        "\"[0-9]{1,2}\":",                      //  0       "start sequence" of each sensor
+        "\"[0-9]{1,2}\":",                      //  0       start-sequence of each sensor
         "\"name\":",                            //  1
         "\"config\":",                          //  2
         "\"state\":",                           //  3
@@ -27,7 +28,7 @@ class Regexp
         "[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}",  // 10
         "[-]*[0-9]{1,}",                        // 11
         "[0-9a-zA-Z_-]{4,}",                    // 12   -> specification of allowed sensornames
-    };
+    };                                          //         must match to zigbees bridge configuration
 
     regex_t *regex_compiled;        // translations
 

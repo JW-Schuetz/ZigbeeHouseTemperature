@@ -1,20 +1,20 @@
 
-#include "Sensor.h"
+#include "ZigbeeSensor.h"
 
 
-Sensor::Sensor()
+ZigbeeSensor::ZigbeeSensor()
 {
   parser = new Parser();
 }
 
 
-Sensor::~Sensor()
+ZigbeeSensor::~ZigbeeSensor()
 {
     delete parser;
 }
 
 
-void Sensor::parseSensorData( string time, string zigbeeRawDataString )
+void ZigbeeSensor::parseSensorData( string time, string zigbeeRawDataString )
 {
     timeStamp = time;   // actual time
 

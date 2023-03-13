@@ -4,8 +4,8 @@ LNK = -lc -lcurl
 CFLAGS = -Wall -std=c++20 #-g -ggdb
 
 BIN = zigbeesensors
-OBJ = ZigbeeSensors.o Manager.o CurlHandle.o CurlSendFileToNAS.o CurlReadZigbeeBridge.o\
-		Parser.o Regexp.o Sensor.o WeatherSensor.o
+OBJ = ZigbeeSensors.o Manager.o Curl.o NAS.o ZigbeeBridge.o\
+		Parser.o Regexp.o ZigbeeSensor.o ZigbeeWeatherSensor.o
 
 $(BIN): $(OBJ)
 	$(CC) $(CFLAGS) -o $(BIN) $(OBJ) $(LNK)
@@ -14,14 +14,14 @@ $(BIN): $(OBJ)
 			${CC} ${CFLAGS} -c $<
 
 ZigbeeSensors.o: Manager.h
-Manager.o: Manager.h Credentials.h CurlSendFileToNAS.h WeatherSensor.h
-CurlHandle.o: CurlHandle.h
-CurlSendFileToNAS.o: CurlSendFileToNAS.h Credentials.h
-CurlReadZigbeeBridge.o: CurlReadZigbeeBridge.h Credentials.h
+Manager.o: Manager.h Curl.h Credentials.h NAS.h ZigbeeWeatherSensor.h
+Curl.o: Curl.h CurlStaticLib.h
+NAS.o: NAS.h Credentials.h CurlStaticLib.h Curl.h
+ZigbeeBridge.o: ZigbeeBridge.h Credentials.h CurlStaticLib.h Curl.h
 Parser.o: Parser.h Regexp.h
 Regexp.o: Regexp.h Manager.h
-Sensor.o: Sensor.h Parser.h
-WeatherSensor.o: WeatherSensor.h Sensor.h
+ZigbeeSensor.o: ZigbeeSensor.h Parser.h
+ZigbeeWeatherSensor.o: ZigbeeWeatherSensor.h ZigbeeSensor.h
 
 clean:
 		rm -f $(OBJ); rm -f $(BIN)
@@ -29,3 +29,6 @@ clean:
 remake:
 		make clean
 		make
+
+valgrind:
+		valgrind --leak-check=full ./zigbeesensors

@@ -17,11 +17,12 @@ typedef struct SensorRawData
 typedef vector<SensorRawData> vectorSRData;
 
 
-class Sensor
+// handle a sensor attached to the zigbee bridge
+class ZigbeeSensor
 {
 public:
-    Sensor();
-    virtual ~Sensor();
+    ZigbeeSensor();
+    virtual ~ZigbeeSensor();
 
 protected:
     Parser *parser;       // pointer to parser object
