@@ -3,11 +3,11 @@
 
 #include <chrono>
 #include <vector>
-#include "Curl.h"
-#include "ZigbeeBridge.h"
-#include "NAS.h"
 #include "Credentials.h"
+#include "Curl.h"
+#include "ZigbeeCoordinator.h"
 #include "ZigbeeWeatherSensor.h"
+#include "NAS.h"
 
 
 using namespace std::chrono;
@@ -56,6 +56,6 @@ private:
     string localFileName;               // actual local filename
     string remoteFileName;              // actual remote filename
 
-    ZigbeeBridge *zigbeeBridge;         // pointer to ZigbeeBridge (for reading Zigbee bridge)
+    ZigbeeCoordinator *zigbeeBridge;    // pointer to ZigbeeCoordinator (for reading Zigbee bridge)
     ZigbeeWeatherSensor *weatherSensor; // pointer to weatherSensor object
 };

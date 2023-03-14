@@ -1,12 +1,12 @@
 
 #include "Credentials.h"
-#include "ZigbeeBridge.h"
+#include "ZigbeeCoordinator.h"
 
 
-WriteMemoryStruct ZigbeeBridge::content;          // storage for curl writefunction
+WriteMemoryStruct ZigbeeCoordinator::content;          // storage for curl writefunction
 
 
-ZigbeeBridge::ZigbeeBridge()
+ZigbeeCoordinator::ZigbeeCoordinator()
 {
     CURL *handle = getHandle();
 
@@ -18,7 +18,7 @@ ZigbeeBridge::ZigbeeBridge()
 }
 
 
-string ZigbeeBridge::getRawDataString()
+string ZigbeeCoordinator::getRawDataString()
 {
     content.memory = {};              // no data initially
     content.memory.reserve( 3000 );   // approximated max. size
@@ -30,7 +30,7 @@ string ZigbeeBridge::getRawDataString()
 }
 
 
-size_t ZigbeeBridge::writeData( void *buffer, size_t size, size_t nmemb, void *userp )
+size_t ZigbeeCoordinator::writeData( void *buffer, size_t size, size_t nmemb, void *userp )
 {
   // function "writeData" may be called more than once!
   // "buffer": pointer to new data to be saved

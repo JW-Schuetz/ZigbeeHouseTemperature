@@ -4,7 +4,7 @@ LNK = -lc -lcurl
 CFLAGS = -Wall -std=c++20 #-g -ggdb
 
 BIN = zigbeesensors
-OBJ = ZigbeeSensors.o Manager.o Curl.o NAS.o ZigbeeBridge.o\
+OBJ = ZigbeeSensors.o Manager.o Curl.o NAS.o ZigbeeCoordinator.o\
 		Parser.o Regexp.o ZigbeeSensor.o ZigbeeWeatherSensor.o
 
 $(BIN): $(OBJ)
@@ -14,10 +14,10 @@ $(BIN): $(OBJ)
 			${CC} ${CFLAGS} -c $<
 
 ZigbeeSensors.o: Manager.h
-Manager.o: Manager.h Curl.h Credentials.h NAS.h ZigbeeWeatherSensor.h
+Manager.o: Manager.h Curl.h Credentials.h ZigbeeCoordinator.h NAS.h ZigbeeWeatherSensor.h
 Curl.o: Curl.h CurlStaticLib.h
 NAS.o: NAS.h Credentials.h CurlStaticLib.h Curl.h
-ZigbeeBridge.o: ZigbeeBridge.h Credentials.h CurlStaticLib.h Curl.h
+ZigbeeCoordinator.o: ZigbeeCoordinator.h Credentials.h CurlStaticLib.h Curl.h
 Parser.o: Parser.h Regexp.h
 Regexp.o: Regexp.h Manager.h
 ZigbeeSensor.o: ZigbeeSensor.h Parser.h

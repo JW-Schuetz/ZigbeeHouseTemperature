@@ -15,7 +15,7 @@ Manager::Manager()
   CURLcode ret = curl_global_init( CURL_GLOBAL_ALL );
   if( ret != CURLE_OK ) throw( string { "Manager::Manager" } );
 
-  zigbeeBridge = new ZigbeeBridge();
+  zigbeeBridge = new ZigbeeCoordinator();
   weatherSensor = new ZigbeeWeatherSensor();
 }
 

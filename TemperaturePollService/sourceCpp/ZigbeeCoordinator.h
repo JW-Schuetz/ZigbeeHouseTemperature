@@ -19,10 +19,10 @@ typedef struct WriteMemoryStruct
 
 
 // handle zigbee bridge (reading raw data string of all available sensors)
-class ZigbeeBridge: public Curl
+class ZigbeeCoordinator: public Curl
 {
 public:
-    ZigbeeBridge();
+    ZigbeeCoordinator();
 
     string getRawDataString();                                  // get read raw data string
 
